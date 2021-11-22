@@ -11,13 +11,16 @@
     "react": "latest",
     "react-dom": "latest",
     "react-scripts": "latest",
+    "styled-components": "^5.3.3",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.12.0",
     "typescript": "latest"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco -r tsconfig-paths/register start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "browserslist": {
     "production": [
@@ -30,5 +33,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^6.4.1",
+    "@types/styled-components": "^5.1.15"
   }
 }

@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",        
+        "paths": {
+            "*": ["./src/subfolder/node_modules/@types/*", "*"],
+            "@src/*": ["./src/*"],
+            "@components/*": ["./src/components/*"],
+            "@containers/*": ["./src/containers/*"],
+            "@root/*": ["*"]
+        },
+    }
+}
