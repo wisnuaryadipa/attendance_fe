@@ -5,6 +5,9 @@
   "dependencies": {
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@mui/icons-material": "^5.1.1",
     "@mui/material": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

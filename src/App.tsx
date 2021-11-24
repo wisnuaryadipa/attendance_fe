@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Sidebar from '@containers/sidebar';
+import MainBar from '@containers/mainbar';
 import ProTip from './ProTip';
 
 
@@ -21,8 +22,9 @@ function Copyright() {
 
 export default function App() {
   return (
-    <Container maxWidth="sm">
+    <Container style={{display: "flex"}} maxWidth={false} >
       <Sidebar/>
+      <MainBar/>
     </Container>
   );
 }

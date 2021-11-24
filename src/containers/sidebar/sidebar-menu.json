@@ -1,0 +1,19 @@
+{
+    "menu": [
+        {
+            "name": "Home"
+        },
+        {
+            "name": "Attendance"
+        },
+        {
+            "name": "Employee"
+        },
+        {
+            "name": "Division"
+        },
+        {
+            "name": "Upload Attendance"
+        }
+    ]
+}
