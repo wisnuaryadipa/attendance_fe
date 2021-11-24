@@ -1,19 +1,37 @@
-{
-    "menu": [
-        {
-            "name": "Home"
-        },
-        {
-            "name": "Attendance"
-        },
-        {
-            "name": "Employee"
-        },
-        {
-            "name": "Division"
-        },
-        {
-            "name": "Upload Attendance"
-        }
-    ]
-}
+[
+    {
+        "child": [
+            {
+                "itemName": "Dashboard",
+                "iconName": "LineStyle"
+            }
+        ]
+    },
+    {
+        "title": "Attendance",
+        "child": [
+            {
+                "itemName": "Attendance",
+                "iconName": "LineStyle"
+            },
+            {
+                "itemName": "Upload Attendance",
+                "iconName": "LineStyle"
+            }
+        ]
+    },
+    {
+        "title": "Master",
+        "child": [
+            {
+                "itemName": "Employee",
+                "iconName": "LineStyle"
+            },
+            {
+                "itemName": "Division",
+                "iconName": "LineStyle"
+            }
+        ]
+        
+    }
+]
