@@ -33,5 +33,13 @@
             }
         ]
         
+    },
+    {
+        "child": [
+            {
+                "itemName": "Dashboard",
+                "iconName": "LineStyle"
+            }
+        ]
     }
 ]

@@ -1,10 +1,11 @@
-interface IListItem {
+export interface IListItem {
     itemName: string,
     iconName?: string,
+    hasTitle?:boolean,
     url?: string,
 }
 
-interface IList {
+export interface IList {
     title?: string,
     child: IListItem[]
 
