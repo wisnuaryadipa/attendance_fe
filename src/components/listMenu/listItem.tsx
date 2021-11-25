@@ -4,7 +4,13 @@ import {IListItem} from '@src/interfaces/IListMenu';
 import loadable from '@loadable/component';
 
 
-interface Props extends react.RefAttributes<any>, IListItem {}
+interface Props extends react.RefAttributes<any>, IListItem {
+    hasTitle: boolean;
+}
+
+const defaultProps = {
+    hasTitle: false
+}
 
 const ListItem = styled.li`
     padding: 5px;
@@ -18,7 +24,7 @@ const ListItem = styled.li`
     }
 `
 
-const ListChild: FC<Props> = styled(({ hasTitle=false, ...props}: Props) => {
+const ListChild = (props: Props) => {
 
     const {itemName, iconName} = props;
     
@@ -37,12 +43,8 @@ const ListChild: FC<Props> = styled(({ hasTitle=false, ...props}: Props) => {
     }
 
     return render;
-})`
-
-`
-
-ListChild.defaultProps = {
-    hasTitle: false
 }
+
+ListChild.defaultProps = defaultProps;
 
 export default ListChild;

@@ -1,7 +1,6 @@
 export interface IListItem {
     itemName: string,
     iconName?: string,
-    hasTitle?:boolean,
     url?: string,
 }
 
