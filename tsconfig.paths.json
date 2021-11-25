@@ -6,6 +6,10 @@
             "@src/*": ["./src/*"],
             "@components/*": ["./src/components/*"],
             "@containers/*": ["./src/containers/*"],
+            "@routers/*": ["./src/routers/*"],
+            "@interfaces/*": ["./src/interfaces/*"],
+            "@config/*": ["./src/config/*"],
+            "@pages/*": ["./src/pages/*"],
             "@root/*": ["*"]
         },
     }

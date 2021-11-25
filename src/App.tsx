@@ -6,6 +6,7 @@ import Link from '@mui/material/Link';
 import Sidebar from '@containers/sidebar';
 import MainBar from '@containers/mainbar';
 import ProTip from './ProTip';
+import Router from '@routers/index'
 
 
 function Copyright() {
@@ -23,8 +24,7 @@ function Copyright() {
 export default function App() {
   return (
     <Container style={{display: "flex"}} maxWidth={false} >
-      <Sidebar/>
-      <MainBar/>
+      <Router/>
     </Container>
   );
 }
