@@ -3,7 +3,8 @@
         "child": [
             {
                 "itemName": "Dashboard",
-                "iconName": "LineStyle"
+                "iconName": "LineStyle",
+                "url": "/"
             }
         ]
     },
@@ -12,11 +13,13 @@
         "child": [
             {
                 "itemName": "Attendance",
-                "iconName": "LineStyle"
+                "iconName": "LineStyle",
+                "url": "/attendance"
             },
             {
                 "itemName": "Upload Attendance",
-                "iconName": "LineStyle"
+                "iconName": "LineStyle",
+                "url": "attendance-upload"
             }
         ]
     },
@@ -25,21 +28,15 @@
         "child": [
             {
                 "itemName": "Employee",
-                "iconName": "LineStyle"
+                "iconName": "LineStyle",
+                "url": "master/employee"
             },
             {
                 "itemName": "Division",
-                "iconName": "LineStyle"
+                "iconName": "LineStyle",
+                "url": "master/division"
             }
         ]
         
-    },
-    {
-        "child": [
-            {
-                "itemName": "Dashboard",
-                "iconName": "LineStyle"
-            }
-        ]
     }
 ]

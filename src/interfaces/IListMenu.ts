@@ -1,7 +1,7 @@
 export interface IListItem {
     itemName: string,
     iconName?: string,
-    url?: string,
+    url: string,
 }
 
 export interface IList {
