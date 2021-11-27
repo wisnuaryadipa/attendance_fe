@@ -10,36 +10,6 @@ const SidebarWrapper = styled.div`
     color: #555;
 `;
 
-const SidebarMenu = styled.div`
-    margin-bottom: 10px;
-`
-
-const SidebarTitle = styled.h3`
-    font-size: 13px;
-    color: #a3a3a3;
-`
-
-const SidebarList = styled.ul`
-    list-style: none;
-    padding: 5px;
-`
-
-const SidebarListItem = styled.li`
-    padding: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    border-radius: 10px;
-
-    :hover  {
-       background-color: rgb(240, 240, 255)
-    }
-`
-
-const LineStyleEnhc = styled(LineStyle)`
-    
-`
-
 const Sidebar: FC = styled((props) => (
     <div className="sidebar" {...props}>
         <SidebarWrapper className="sidebarWrapper">
