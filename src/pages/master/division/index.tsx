@@ -11,29 +11,29 @@ import axios from 'axios';
 
 export default function BasicTable() {
 
+  
+  const [divisions, setDivisions] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
-  const [employees, setEmployees] = useState([]);
-
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      await axios.get('http://localhost:3001/api/master/employee/get-all')
+    const fetchDivisions = async () => {
+      await axios.get('http://localhost:3001/api/master/division/get-all')
       .then(function (response) {
-        setEmployees(response.data.data)
-        console.log(response);
-        setLoadingData(false);
+          setDivisions(response.data.data)
+          console.log(response);
+          setLoadingData(false);
       })
       .catch(function (error) {
-        // handle error
-        console.log(error);
+          
+          console.log(error);
       });
+  
+      console.log("tes");
     }
 
-    if (loadingData) {
-      // if the result is not ready so you make the axios call
-      fetchEmployees();
-    }
+    fetchDivisions();
   }, [])
+
   
   return (
 
@@ -42,23 +42,21 @@ export default function BasicTable() {
         <TableHead>
           <TableRow>
             <TableCell>No.</TableCell>
-            <TableCell align="left">Name</TableCell>
-            <TableCell align="center">MachineId</TableCell>
+            <TableCell align="left">Division Name</TableCell>
             <TableCell align="right">Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {employees.map((employee:any) => (
+          {divisions.map((division:any) => (
             <TableRow
-              key={employee.id}
+              key={division.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {employee.id}
+                {division.id}
               </TableCell>
-              <TableCell align="left">{employee.name}</TableCell>
-              <TableCell align="center">{employee.machineId}</TableCell>
-            <TableCell align="right"></TableCell>
+              <TableCell align="left">{division.name}</TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
           ))}
         </TableBody>

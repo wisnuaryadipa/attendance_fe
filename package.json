@@ -12,6 +12,7 @@
     "@mui/material": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "axios": "^0.24.0",
     "react": "latest",
     "react-dom": "latest",
     "react-router": "^6.0.2",

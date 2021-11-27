@@ -23,7 +23,7 @@ function Copyright() {
 
 export default function App() {
   return (
-    <Container style={{display: "flex"}} maxWidth={false} >
+    <Container style={{display: "flex", height: "100%"}} maxWidth={false} >
       <Router/>
     </Container>
   );

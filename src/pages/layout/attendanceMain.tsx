@@ -6,6 +6,7 @@ import SideBar from '@containers/sidebar'
 
 
 const ContainerStyled = styled(Container)`
+    margin-top: 50px;
     flex: 5;
 `
 

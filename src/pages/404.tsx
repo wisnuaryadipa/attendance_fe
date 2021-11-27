@@ -45,7 +45,8 @@ const Page404: FC = styled((props) => {
                         margin: 20px;
                 }
                 button {
-                        font-size: 20px;
+                        line-height: 26px;
+                        font-size: 15px;
                         margin: 0 40px;
                 }
         }
