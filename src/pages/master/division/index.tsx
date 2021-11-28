@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {NavLink} from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -38,6 +39,13 @@ export default function BasicTable() {
   return (
 
     <TableContainer sx={{maxWidth:800}} component={Paper}>
+      <div className="table-title">
+        <div className="headline">Divisions List</div>
+        <div className="headline-action">
+          <NavLink to="/" ></NavLink>
+            
+        </div>
+      </div>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>

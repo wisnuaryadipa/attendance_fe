@@ -6,8 +6,11 @@ import SideBar from '@containers/sidebar'
 
 
 const ContainerStyled = styled(Container)`
-    margin-top: 50px;
+    padding-top: 50px;
     flex: 5;
+    a {
+        text-decoration: none;
+    }
 `
 
 const attendanceLayout = () => {
@@ -15,7 +18,7 @@ const attendanceLayout = () => {
     return (
         <>
             <SideBar/>
-            <ContainerStyled maxWidth={false}>
+            <ContainerStyled maxWidth={false} >
                 <Outlet/>
             </ContainerStyled>
         </>

@@ -19,6 +19,7 @@ const ListItem = styled.li`
     display: flex;
     align-items: center;
     border-radius: 10px;
+    color:black;
     
 
     :hover  {

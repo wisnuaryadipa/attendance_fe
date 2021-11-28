@@ -2,6 +2,7 @@
 import MainBar from '@containers/mainbar';
 import Master from '@pages/master/index';
 import MasterEmployee from '@pages/master/employee'
+import AddEmployee from '@pages/master/employee/addNew'
 import MasterDivision from '@pages/master/division'
 import IRoute, {IRoutes} from '@interfaces/IRoute';
 
@@ -16,7 +17,7 @@ const masterRoutes: IRoutes = [
     },
     {
         path: "/employee/create",
-        pageComponent: MainBar
+        pageComponent: AddEmployee
     },
     {
         path: "/employee/:employeeId",

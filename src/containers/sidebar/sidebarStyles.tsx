@@ -6,6 +6,7 @@ const sidebarStyles = css`
     min-height: 100vh;
     background-color: rgb(251, 251, 255);
     position: sticky;
+    color:black;
 `;
 
 export default sidebarStyles;
