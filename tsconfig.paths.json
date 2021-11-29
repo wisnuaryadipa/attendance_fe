@@ -10,6 +10,7 @@
             "@interfaces/*": ["./src/interfaces/*"],
             "@config/*": ["./src/config/*"],
             "@pages/*": ["./src/pages/*"],
+            "@services/*": ["./src/services/*"],
             "@root/*": ["*"]
         },
     }

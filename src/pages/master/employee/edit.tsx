@@ -6,42 +6,21 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import FormControl from '@mui/material/FormControl';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import Typography from '@mui/material/Typography';
 import NotFoundPage from '@pages/404'
 import IEmployee from '@interfaces/response/IEmployee'
 import { useParams, useNavigate } from 'react-router-dom';
+import { postAxios, getAxios } from '@services/axios';
 
 
-
-
-const HeadFormContainer = (props:any) => {
-    return (
-        <div className={`headFormContainer ${props.className}`} {...props}>
-            <Typography className="titleForm" variant='h5'>Edit Employee Form</Typography>
-            <div className="actionForm"></div>
-        </div>
-    )
-}
-
-const HeadFormContainerStyled = styled(HeadFormContainer)`
+const HeadFormContainerStyled = styled.div`
     display: flex;
     padding: 15px;
     border-bottom: 1px solid #cecece;
 `;
 
-
-const BodyFormContainer = (props: any) => {
-    return (
-        <div className={`bodyFormContainer`} {...props}>
-            
-        </div>
-        
-    )
-}
-
-
-const BodyFormContainerStyled = styled(BodyFormContainer)`
+const BodyFormContainerStyled = styled.div`
     padding: 20px 0;
     display: flex;
     flex-wrap: nowrap;
@@ -56,14 +35,7 @@ const BodyFormContainerStyled = styled(BodyFormContainer)`
     
 `
 
-const FooterFormContainer = (props:any) => {
-    return(
-        <div className={`footerFormContainer ${props.className}`} {...props}>
-        </div>
-    )
-}
-
-const FooterFormContainerStyled = styled(FooterFormContainer)`
+const FooterFormContainerStyled = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 15px;
@@ -78,28 +50,26 @@ const ResultComponent = (props: any) => {
 
     const [isEmployeeIdExist, setIsEmployeeIdExist] = useState(true);
     const [isRendered, setIsRendered] = useState(false);
+    const [data, setData] = useState({} as Partial<IEmployee>);
     const {employeeId} = useParams();
     const navigate = useNavigate();
-    const [data, setData] = useState({} as Partial<IEmployee>);
+    const axiosOption: AxiosRequestConfig = {
+      url: `http://localhost:3001/api/master/employee/${employeeId}`,
+    }
 
     useEffect(() => {
         const checkExisting = async () => {
-            await axios.get(`http://localhost:3001/api/master/employee/${employeeId}`)
-            .then((response) => {
-                if (!response.data.data){ 
-                    setIsEmployeeIdExist(false) 
-                } else {
-                    setData(response.data.data)
-                }
-                setIsRendered(true);
-            })
+            const response = await getAxios(axiosOption);
+            setData(response);
+            if (!response.data.data){ 
+                setIsEmployeeIdExist(false) 
+            } else {
+                setData(response.data.data)
+            }
+            setIsRendered(true);
         }
         checkExisting();
     },[])
-
-    const convertData = (data: any) => {
-        
-    }
 
 
     
@@ -133,36 +103,39 @@ const ResultComponent = (props: any) => {
 
     const result = (
         <Container component={Paper} sx={{minWidth:'400px'}}>
-            <HeadFormContainerStyled/>
+            <HeadFormContainerStyled> 
+                <Typography className="titleForm" variant='h5'>Edit Employee Form</Typography>
+                <div className="actionForm"></div>
+            </HeadFormContainerStyled>
             <BodyFormContainerStyled>
-                    <Grid container>  
-                        <Grid item lg={6} sm={12}>
-                            <FormControl fullWidth variant='filled' required>
-                                <TextField
-                                required
-                                id="name"
-                                key="employeeName"
-                                label="Employee Name"
-                                onChange={(e)=>{handleChange(e, "employeeName")} }
-                                className="text-input"
-                                defaultValue={data.name}
-                                />
-                                
-                            </FormControl>
+                <Grid container>  
+                    <Grid item lg={6} sm={12}>
+                        <FormControl fullWidth variant='filled' required>
+                            <TextField
+                            required
+                            id="name"
+                            key="employeeName"
+                            label="Employee Name"
+                            onChange={(e)=>{handleChange(e, "employeeName")} }
+                            className="text-input"
+                            defaultValue={data.name}
+                            />
+                            
+                        </FormControl>
 
-                            <FormControl fullWidth variant='filled' required>
-                                <TextField
-                                    required
-                                    id="machine-id"
-                                    key="machineId"
-                                    label="Machine Id"
-                                    onChange={(e)=>{handleChange(e, "machineId")} }
-                                    className="text-input"
-                                    defaultValue={data.machineId}
-                                    />
-                            </FormControl>
-                        </Grid>
+                        <FormControl fullWidth variant='filled' required>
+                            <TextField
+                                required
+                                id="machine-id"
+                                key="machineId"
+                                label="Machine Id"
+                                onChange={(e)=>{handleChange(e, "machineId")} }
+                                className="text-input"
+                                defaultValue={data.machineId}
+                                />
+                        </FormControl>
                     </Grid>
+                </Grid>
                 
             </BodyFormContainerStyled>
             <FooterFormContainerStyled>

@@ -10,6 +10,7 @@ module.exports = {
       "@interfaces": path.resolve(__dirname, "./src/interfaces"),
       "@config": path.resolve(__dirname, "./src/config"),
       "@pages": path.resolve(__dirname, "./src/pages"),
+      "@services": path.resolve(__dirname, "./src/services"),
       "@root": path.resolve(__dirname, "./"),
     },
   },
