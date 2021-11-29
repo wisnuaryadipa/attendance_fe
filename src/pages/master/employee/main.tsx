@@ -12,12 +12,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import Paper from '@mui/material/Paper';
 import styled from 'styled-components';
 import axios from 'axios';
+import IEmployee from '@interfaces/response/IEmployee';
 
 
 export default function BasicTable() {
 
   const [loadingData, setLoadingData] = useState(true);
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState([] as Partial<IEmployee[]>);
 
 
   useEffect(() => {
