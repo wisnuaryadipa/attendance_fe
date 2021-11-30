@@ -37,18 +37,18 @@ const masterRoutes: IRoutes = [
     },
     {
         path: "/division/create",
+        pageComponent: MasterDivision.AddNew
+    },
+    {
+        path: "/division/:divisionId",
         pageComponent: MainBar
     },
     {
-        path: "/division/:employeeId",
-        pageComponent: MainBar
+        path: "/division/:divisionId/edit",
+        pageComponent: MasterDivision.Edit
     },
     {
-        path: "/division/:employeeId/edit",
-        pageComponent: MainBar
-    },
-    {
-        path: "/division/:employeeId/detail",
+        path: "/division/:divisionId/detail",
         pageComponent: MainBar
     },
 ]

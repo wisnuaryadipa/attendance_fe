@@ -12,11 +12,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import Paper from '@mui/material/Paper';
 import styled from 'styled-components';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import {getAxios} from '@services/axios'
+import {getAxios, test} from '@services/axios'
 import IEmployee from '@interfaces/response/IEmployee';
+import IResponse from '@interfaces/response/IResponse';
 import { Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
+import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel'
+
 
 
 export default function BasicTable() {
@@ -31,14 +34,14 @@ export default function BasicTable() {
 
 
     useEffect(() => {
-        const fetchEmployees = async () => {
-            const resFetch = await getAxios(axiosOption);
+        const loadData = async () => {
+            const resFetch = await test<IResponse<IEmployee[]>>(axiosOption);
             setEmployees(resFetch.data.data);
         }
 
         if (loadingData) {
         // if the result is not ready so you make the axios call
-        fetchEmployees();
+        loadData();
         }
     }, [])
 
@@ -121,7 +124,6 @@ export default function BasicTable() {
                                 <EditIcon sx={{width: '20px !important'}} />
                             </Button>
                         </NavLink>
-                        
                     </TableCell>
                 </TableRow>
                 ))}
