@@ -18,7 +18,7 @@ import IResponse from '@interfaces/response/IResponse';
 import { Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
-import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel'
+import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel';
 
 
 
@@ -45,20 +45,8 @@ export default function BasicTable() {
         }
     }, [])
 
-    const TableHeadlineStyled = styled.div`
+    const SearchBox = styled.div`
         display: flex;
-        justify-content: space-between;
-        padding: 10px;
-        border-bottom: 1px solid #bbbbbb;
-
-        .headline-action{
-        display: flex;
-
-        }
-        .searchBox {
-        display: flex;
-
-        }
     `;
 
     const clickToEdit = (e: MouseEvent<HTMLButtonElement>, id:number) => {
@@ -66,71 +54,70 @@ export default function BasicTable() {
     }
 
     return (
-        <div className="masterEmploye wrapper">
-        <TableContainer sx={{maxWidth:800, marginBottom:'40px'}} component={Paper}>
-            <TableHeadlineStyled>
+        <Panel className="masterEmploye wrapper">
+            <PanelHeader>
                 <Typography variant="h5">Emlpoyee List</Typography>
-                <div className="headline-action">
-                <div className="searchBox">
+                <SearchBox className="headline-action">
                     <Paper
                     component="form"
                     sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
                     >
-                    <SearchIcon/>
-                    <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder={`Search Emlpoyee List`}
-                        inputProps={{ 'aria-label': 'search google maps' }}
-                    />
+                        <SearchIcon/>
+                        <InputBase
+                            sx={{ ml: 1, flex: 1 }}
+                            placeholder={`Search Emlpoyee List`}
+                            inputProps={{ 'aria-label': 'search google maps' }}
+                        />
                     </Paper>
                     <NavLink to="/master/employee/create">
-                    <Button 
-                    variant="contained" 
-                    style={{marginLeft: 15}}
-                    color="success">
-                        Add Employee
-                    </Button>
+                        <Button 
+                        variant="contained" 
+                        style={{marginLeft: 15}}
+                        color="success">
+                            Add Employee
+                        </Button>
                     </NavLink>
-                    
-                </div>
-                    
-                </div>
-            </TableHeadlineStyled>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-                <TableRow>
-                <TableCell>No.</TableCell>
-                <TableCell align="left">Name</TableCell>
-                <TableCell align="center">MachineId</TableCell>
-                <TableCell align="center">Action</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {employees.map((employee:any) => (
-                <TableRow
-                    key={employee.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                    <TableCell component="th" scope="row">
-                    {employee.id}
-                    </TableCell>
-                    <TableCell align="left">{employee.name}</TableCell>
-                    <TableCell align="center">{employee.machineId}</TableCell>
-                    <TableCell align="center">
-                        <NavLink to={`/master/employee/${employee.id}/edit`} replace={false} >
-                            <Button 
-                            variant='contained' 
-                            color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
-                                <EditIcon sx={{width: '20px !important'}} />
-                            </Button>
-                        </NavLink>
-                    </TableCell>
-                </TableRow>
-                ))}
-            </TableBody>
-            </Table>
-        </TableContainer>
-        </div>
+                </SearchBox>
+            </PanelHeader>
+            <PanelBody>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                        <TableCell>No.</TableCell>
+                        <TableCell align="left">Name</TableCell>
+                        <TableCell align="center">MachineId</TableCell>
+                        <TableCell align="center">Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {employees.map((employee:any) => (
+                        <TableRow
+                            key={employee.id}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                            <TableCell component="th" scope="row">
+                            {employee.id}
+                            </TableCell>
+                            <TableCell align="left">{employee.name}</TableCell>
+                            <TableCell align="center">{employee.machineId}</TableCell>
+                            <TableCell align="center">
+                                <NavLink to={`/master/employee/${employee.id}/edit`} replace={false} >
+                                    <Button 
+                                    variant='contained' 
+                                    color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
+                                        <EditIcon sx={{width: '20px !important'}} />
+                                    </Button>
+                                </NavLink>
+                            </TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </PanelBody>
+            <PanelFooter>
+
+            </PanelFooter>
+        </Panel>
         
     );
 }

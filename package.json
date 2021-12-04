@@ -13,6 +13,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "axios": "^0.24.0",
+    "notistack": "^2.0.3",
     "react": "latest",
     "react-dom": "latest",
     "react-router": "^6.0.2",

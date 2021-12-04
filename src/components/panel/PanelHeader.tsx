@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 const PanelHeader = styled.div`
     display: flex;
+    justify-content: space-between;
     padding: 15px;
     border-bottom: 1px solid #cecece;
 `

@@ -19,7 +19,7 @@
             {
                 "itemName": "Upload Attendance",
                 "iconName": "LineStyle",
-                "url": "attendance-upload"
+                "url": "attendance/upload"
             }
         ]
     },

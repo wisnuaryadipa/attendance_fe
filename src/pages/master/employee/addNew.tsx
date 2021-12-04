@@ -1,7 +1,4 @@
 import react, { useState } from 'react';
-import Container from '@mui/material/Container'
-import Paper from '@mui/material/Paper';
-import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -10,41 +7,8 @@ import axios, {AxiosRequestConfig} from 'axios';
 import Typography from '@mui/material/Typography';
 import IEmployee from 'src/interfaces/response/IEmployee';
 import {postAxios} from '@services/axios';
+import {Panel, PanelBody, PanelHeader, PanelFooter} from '@components/panel';
 
-
-const HeadFormContainerStyled = styled.div`
-    display: flex;
-    padding: 15px;
-    border-bottom: 1px solid #cecece;
-`;
-
-
-
-const BodyFormContainerStyled = styled.div`
-    padding: 20px 0;
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-
-    input {
-        margin-right: 10px;
-    }
-    .text-input {
-        margin: 8px;
-    }
-    
-`
-
-const FooterFormContainerStyled = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    border-top: 1px solid #cecece;
-
-    .text-information {
-        color: #9e9e9e;
-    }
-`
 
 const ResultComponent = (props: any) => {
 
@@ -80,46 +44,45 @@ const ResultComponent = (props: any) => {
     }
 
     return (
-        <Container component={Paper} sx={{minWidth:'400px'}}>
-            <HeadFormContainerStyled>
+        <Panel>
+            <PanelHeader>
                 <Typography 
                 className="titleForm" 
                 variant='h5'>
                     Create New Employee
                 </Typography>
                 <div className="actionForm"></div>
-            </HeadFormContainerStyled>
-            <BodyFormContainerStyled>
-                    <Grid container>  
-                        <Grid item lg={6} sm={12}>
-                            <FormControl fullWidth variant='filled' required>
-                                <TextField
-                                required
-                                id="name"
-                                key="name"
-                                label="Employee Name"
-                                onChange={(e)=>{handleChange(e, "name")} }
-                                className="text-input"
-                                defaultValue={data.name}
-                                />
-                            </FormControl>
+            </PanelHeader>
+            <PanelBody>
+                <Grid container>  
+                    <Grid item lg={6} sm={12}>
+                        <FormControl fullWidth variant='filled' required>
+                            <TextField
+                            required
+                            id="name"
+                            key="name"
+                            label="Employee Name"
+                            onChange={(e)=>{handleChange(e, "name")} }
+                            className="text-input"
+                            defaultValue={data.name}
+                            />
+                        </FormControl>
 
-                            <FormControl fullWidth variant='filled' required>
-                                <TextField
-                                required
-                                id="machine-id"
-                                key="machineId"
-                                label="Machine Id"
-                                onChange={(e)=>{handleChange(e, "machineId")} }
-                                className="text-input"
-                                defaultValue={data.machineId}
-                                />
-                            </FormControl>
-                        </Grid>
+                        <FormControl fullWidth variant='filled' required>
+                            <TextField
+                            required
+                            id="machine-id"
+                            key="machineId"
+                            label="Machine Id"
+                            onChange={(e)=>{handleChange(e, "machineId")} }
+                            className="text-input"
+                            defaultValue={data.machineId}
+                            />
+                        </FormControl>
                     </Grid>
-                
-            </BodyFormContainerStyled>
-            <FooterFormContainerStyled>
+                </Grid>
+            </PanelBody>
+            <PanelFooter>
                 <div className="text-information">Please fill out the form above. </div>
                 <div className="actionForm">
                     <Button 
@@ -130,8 +93,8 @@ const ResultComponent = (props: any) => {
                     SUBMIT
                     </Button>
                 </div>
-            </FooterFormContainerStyled>
-        </Container>
+            </PanelFooter>
+        </Panel>
     )
 
 }

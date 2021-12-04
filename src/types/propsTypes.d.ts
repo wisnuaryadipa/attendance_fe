@@ -1,3 +1,5 @@
+import { Variant } from "@mui/material/styles/createTypography";
+
 type AppProps = {
     message: string;
     count: number;
@@ -38,3 +40,10 @@ type AppProps = {
   };
 
 export default AppProps;
+
+export type Props = {
+  variant: "green" | "red" | "grey" | "yellow";
+};
+
+
+type I2 = keyof typeof Props

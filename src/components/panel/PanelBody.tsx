@@ -5,7 +5,7 @@ import AppProps from 'src/types/propsTypes';
 import styled from 'styled-components';
 
 const PanelBody = styled.div`
-    padding: 20px 0;
+    padding: 20px 15px;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;

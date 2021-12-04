@@ -1,4 +1,4 @@
-import react, { useEffect, useState } from 'react';
+import react, { ChangeEvent, useEffect, useState } from 'react';
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper';
 import styled from 'styled-components';
@@ -13,41 +13,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { putAxios, getAxios } from '@services/axios';
 import IDivision from '@interfaces/response/IDivision';
 import IResponse from '@interfaces/response/IResponse';
+import {Panel, PanelBody, PanelHeader, PanelFooter} from '@components/panel';
 
-
-const HeadFormContainerStyled = styled.div`
-    display: flex;
-    padding: 15px;
-    border-bottom: 1px solid #cecece;
-`;
-
-const BodyFormContainerStyled = styled.div`
-    padding: 20px 0;
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-
-    input {
-        margin-right: 10px;
-    }
-    .text-input {
-        margin: 8px;
-    }
-    
-`
-
-const FooterFormContainerStyled = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    border-top: 1px solid #cecece;
-
-    .text-information {
-        color: #9e9e9e;
-    }
-`
-
-const ResultComponent = (props: any) => {
+const ResultComponent = (props: any): JSX.Element => {
 
     const [isDivisionIdExist, setIsDivisionIdExist] = useState(true);
     const [isRendered, setIsRendered] = useState(false);
@@ -83,6 +51,7 @@ const ResultComponent = (props: any) => {
     };
 
     const saveEditData = async (option: AxiosRequestConfig) => {
+        const s = await fetchDivisionById('s')
         const response = await putAxios(option)
         console.log(response);
         alert("Input Data Success !");
@@ -107,12 +76,12 @@ const ResultComponent = (props: any) => {
     }
 
     const result = (
-        <Container component={Paper} sx={{minWidth:'400px'}}>
-            <HeadFormContainerStyled> 
+        <Panel>
+            <PanelHeader> 
                 <Typography className="titleForm" variant='h5'>Edit Division Form</Typography>
                 <div className="actionForm"></div>
-            </HeadFormContainerStyled>
-            <BodyFormContainerStyled>
+            </PanelHeader>
+            <PanelBody>
                 <Grid container>  
                     <Grid item lg={6} sm={12}>
                         <FormControl fullWidth variant='filled' required>
@@ -121,7 +90,7 @@ const ResultComponent = (props: any) => {
                             id="name"
                             key="divisionName"
                             label="Division Name"
-                            onChange={(e)=>{handleChange(e, "name")} }
+                            onChange={(e) => {handleChange(e, 'name')} }
                             className="text-input"
                             defaultValue={data.name}
                             />
@@ -129,8 +98,8 @@ const ResultComponent = (props: any) => {
                         </FormControl>
                     </Grid>
                 </Grid>
-            </BodyFormContainerStyled>
-            <FooterFormContainerStyled>
+            </PanelBody>
+            <PanelFooter>
                 <div className="text-information">Please fill out the form above. </div>
                 <div className="actionForm">
                     <Button 
@@ -141,8 +110,8 @@ const ResultComponent = (props: any) => {
                     SUBMIT
                     </Button>
                 </div>
-            </FooterFormContainerStyled>
-        </Container>
+            </PanelFooter>
+        </Panel>
     )
 
     if (!isDivisionIdExist){ return (<NotFoundPage/>)}

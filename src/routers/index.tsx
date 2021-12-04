@@ -8,6 +8,7 @@ import Layout from '@pages/layout/attendanceMain'
 import styled from 'styled-components';
 
 import masterRoutes from './masterRoutes';
+import attendanceRoutes from './attendanceRoutes';
 
 
 const ContainerStyled = styled(Container)`
@@ -24,6 +25,11 @@ const Router = () => {
                         const RouteComponent = route.pageComponent as React.ComponentType;
                         return (<Route caseSensitive={true} path={'master' + route.path} element={<RouteComponent/>}></Route>)
                     }) }
+                    { attendanceRoutes.map((route) => {
+                        const RouteComponent = route.pageComponent as React.ComponentType;
+                        return (<Route caseSensitive={true} path={'attendance' + route.path} element={<RouteComponent/>}></Route>)
+                    }) }
+                    
                 </Route>
                 <Route path="*" element={<Pages.Page404/>}> </Route>
             </Routes>

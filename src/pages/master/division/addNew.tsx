@@ -1,7 +1,4 @@
 import react, { useState } from 'react';
-import Container from '@mui/material/Container'
-import Paper from '@mui/material/Paper';
-import styled from 'styled-components';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -10,41 +7,7 @@ import axios, {AxiosRequestConfig} from 'axios';
 import Typography from '@mui/material/Typography';
 import IDivision from '@src/interfaces/response/IDivision';
 import {postAxios} from '@services/axios';
-
-
-const HeadFormContainerStyled = styled.div`
-    display: flex;
-    padding: 15px;
-    border-bottom: 1px solid #cecece;
-`;
-
-
-
-const BodyFormContainerStyled = styled.div`
-    padding: 20px 0;
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-
-    input {
-        margin-right: 10px;
-    }
-    .text-input {
-        margin: 8px;
-    }
-    
-`
-
-const FooterFormContainerStyled = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    border-top: 1px solid #cecece;
-
-    .text-information {
-        color: #9e9e9e;
-    }
-`
+import {Panel, PanelBody, PanelHeader, PanelFooter} from '@components/panel';
 
 const ResultComponent = (props: any) => {
 
@@ -79,16 +42,16 @@ const ResultComponent = (props: any) => {
     }
 
     return (
-        <Container component={Paper} sx={{minWidth:'400px'}}>
-            <HeadFormContainerStyled>
+        <Panel>
+            <PanelHeader>
                 <Typography 
                 className="titleForm" 
                 variant='h5'>
                     Create New Division
                 </Typography>
                 <div className="actionForm"></div>
-            </HeadFormContainerStyled>
-            <BodyFormContainerStyled>
+            </PanelHeader>
+            <PanelBody>
                     <Grid container>  
                         <Grid item lg={6} sm={12}>
                             <FormControl fullWidth variant='filled' required>
@@ -105,8 +68,8 @@ const ResultComponent = (props: any) => {
                         </Grid>
                     </Grid>
                 
-            </BodyFormContainerStyled>
-            <FooterFormContainerStyled>
+            </PanelBody>
+            <PanelFooter>
                 <div className="text-information">Please fill out the form above. </div>
                 <div className="actionForm">
                     <Button 
@@ -117,8 +80,8 @@ const ResultComponent = (props: any) => {
                     SUBMIT
                     </Button>
                 </div>
-            </FooterFormContainerStyled>
-        </Container>
+            </PanelFooter>
+        </Panel>
     )
 
 }
