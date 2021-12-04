@@ -11,7 +11,7 @@ export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosRespon
 
 export const getAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
     try {
-        return await axios.get(option.url!, option);
+        return await axios.get(option.url!, option) as AxiosResponse<T>;
     } catch (err) {
         alert(err);
         throw err;

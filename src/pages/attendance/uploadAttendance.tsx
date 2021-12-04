@@ -53,7 +53,7 @@ const Render = (): JSX.Element => {
     
             await postAxios(option).then(res => {
                 setIsLoadingUpload(false);
-                enqueueSnackbar('File has been uploaded!', { variant: 'success' });
+                enqueueSnackbar(`File has been uploaded! - ${res.data.data.length} rows`, { variant: 'success' });
             }).then(res => {
             })
         }
@@ -66,7 +66,7 @@ const Render = (): JSX.Element => {
     }
     
     const result = (
-        <Container>
+        <>
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={isLoadingUpload}
@@ -116,7 +116,7 @@ const Render = (): JSX.Element => {
                     </div>
                 </PanelBody>
             </Panel>
-        </Container>
+        </>
         
     )
 

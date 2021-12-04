@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import {Panel, PanelHeader, PanelBody, PanelFooter} from '@components/panel'
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
@@ -44,51 +45,41 @@ export default function BasicTable() {
     return response;
   }
 
-
-  const TableHeadlineStyled = styled.div`
+  const HeaderAction = styled.div`
     display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #bbbbbb;
+  `
 
-    .headline-action{
-      display: flex;
-    }
-    .searchBox {
-      display: flex;
-    }
-  `;
+
   
   return (
 
-    <TableContainer sx={{maxWidth:800}} component={Paper}>
-        <TableHeadlineStyled>
-            <Typography variant="h5">Division List</Typography>
+    <Panel>
+      <PanelHeader>
+        <Typography variant="h5">Division List</Typography>
             
-              <div className="headline-action">
-                <div className="searchBox">
-                  <Paper
-                  component="form"
-                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
-                  >
-                  <SearchIcon/>
-                  <InputBase
-                      sx={{ ml: 1, flex: 1 }}
-                      placeholder={`Search Division List`}
-                      inputProps={{ 'aria-label': 'search google maps' }}
-                  />
-                  </Paper>
-                  <NavLink to="/master/division/create">
-                    <Button 
-                    variant="contained" 
-                    style={{marginLeft: 15}}
-                    color="success">
-                        Add Division
-                    </Button>
-                  </NavLink>
-                </div>
-              </div>
-        </TableHeadlineStyled>
+        <HeaderAction>
+          <Paper
+          component="form"
+          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
+          >
+          <SearchIcon/>
+          <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder={`Search Division List`}
+              inputProps={{ 'aria-label': 'search google maps' }}
+          />
+          </Paper>
+          <NavLink to="/master/division/create">
+            <Button 
+            variant="contained" 
+            style={{marginLeft: 15}}
+            color="success">
+                Add Division
+            </Button>
+          </NavLink>
+        </HeaderAction>
+      </PanelHeader>
+      <PanelBody>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
             <TableRow>
@@ -120,6 +111,10 @@ export default function BasicTable() {
             ))}
             </TableBody>
         </Table>
-    </TableContainer>
+      </PanelBody>
+      <PanelFooter>
+
+      </PanelFooter>
+    </Panel>
   );
 }
