@@ -24,14 +24,12 @@ export default function BasicTable() {
 
   
   const [divisions, setDivisions] = useState([] as Partial<IDivision[]>);
-  const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
         const response = await fetchDivisions();
         setDivisions(response.data.data)
         console.log(response);
-        setLoadingData(false);
     }
     loadData();
   }, [])
@@ -44,6 +42,8 @@ export default function BasicTable() {
     const response = await getAxios<IResponse<IDivision[]>>(axiosOption);
     return response;
   }
+
+
 
   const HeaderAction = styled.div`
     display: flex;

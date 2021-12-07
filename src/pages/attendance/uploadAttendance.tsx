@@ -20,10 +20,11 @@ const Render = (): JSX.Element => {
     const [isFilePicked, setIsFilePicked] = useState(false);
     const [isLoadingUpload, setIsLoadingUpload] = useState(false);
     const inputFileRef = useRef<HTMLInputElement>(null);
+    const ref = useRef(false);
     const { enqueueSnackbar } = useSnackbar();
     const handlePickFile = () => {
         /*Collecting node-element and performing click*/
-        
+        ref.current = true;
         if (inputFileRef.current) { inputFileRef.current.click()}
       }
     const onFileChange = (e: react.ChangeEvent<HTMLInputElement>) => {

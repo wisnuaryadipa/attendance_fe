@@ -51,7 +51,6 @@ const ResultComponent = (props: any): JSX.Element => {
     };
 
     const saveEditData = async (option: AxiosRequestConfig) => {
-        const s = await fetchDivisionById('s')
         const response = await putAxios(option)
         console.log(response);
         alert("Input Data Success !");

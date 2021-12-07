@@ -9,16 +9,12 @@ export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosRespon
     }
 }
 
-export const getAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
-    try {
-        return await axios.get(option.url!, option) as AxiosResponse<T>;
-    } catch (err) {
-        alert(err);
-        throw err;
-    }
+export const getAxios = async <T>(option: AxiosRequestConfig) => {
+        const data = await axios.get(option.url!, option).catch(err => { alert(err) }) as AxiosResponse<T>;
+        return data;
 }
 
-export const putAxios = async (option: AxiosRequestConfig): Promise<AxiosResponse<any>> => {
+export const putAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
     try {
         return await axios.put(option.url!, option.data, option);
     } catch (err) {

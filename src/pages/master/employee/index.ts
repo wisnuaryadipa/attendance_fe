@@ -1,7 +1,7 @@
-import Main from '@pages/master/employee/main';
-import AddNew from '@pages/master/employee/addNew';
-import Edit from '@pages/master/employee/edit';
-import Detail from '@pages/master/employee/detail';
+import Main from './main';
+import AddNew from './addNew';
+import Edit from './edit';
+import Detail from './detail';
 
 const employeePages = {
     Main: Main,

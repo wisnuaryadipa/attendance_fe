@@ -29,7 +29,7 @@ const ResultComponent = (props: any) => {
             const url = "http://localhost:3001/api/master/employee/add";
             const bodyFormData = new URLSearchParams();
             bodyFormData.append('name', data.name);
-            bodyFormData.append('machineId', data.machineId);
+            bodyFormData.append('machineId', data.machineId.toString());
             const axiosOption: AxiosRequestConfig = {
                 url: url,
                 data: bodyFormData,
