@@ -9,13 +9,6 @@ const PanelBody = styled.div`
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
-
-    input {
-        margin-right: 10px;
-    }
-    .text-input {
-        margin: 8px;
-    }
 `
 
 const Panel = (props: HTMLAttributes<HTMLDivElement>): JSX.Element => {

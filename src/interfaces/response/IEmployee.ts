@@ -17,6 +17,8 @@ export interface IBaseEmployee {
     email?:string;
     employeeCode?:string;
     description?:string;
+    flatSalary?: number;
+    activeFlatSalary?: boolean;
 }
 
 export default interface IEmployee extends IBaseEmployee {

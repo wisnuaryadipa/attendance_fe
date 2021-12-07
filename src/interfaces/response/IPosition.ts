@@ -1,3 +1,6 @@
+import IDivision from "./IDivision";
+import IEmployee from "./IEmployee";
+
 export interface IBasePosition {
     name: string;
     basicSalary?: string;
@@ -13,4 +16,6 @@ export interface IBasePosition {
 
 export default interface IPosition extends IBasePosition {
     id: number;
+    employees?: IEmployee[];
+    division?: IDivision;
 }

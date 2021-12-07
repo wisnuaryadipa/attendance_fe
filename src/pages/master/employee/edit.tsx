@@ -1,6 +1,7 @@
 import react, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import FormControl from '@mui/material/FormControl';
 import axios, { AxiosRequestConfig } from 'axios';
@@ -11,29 +12,45 @@ import IResponse from '@interfaces/response/IResponse'
 import { useParams, useNavigate } from 'react-router-dom';
 import { putAxios, getAxios } from '@services/axios';
 import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel';
+import Select from '@components/Select/Select';
+import genderData from '@src/static/gender';
+import {activeStatus} from '@src/static/common';
+import { SelectChangeEvent } from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
+import IPosition from 'src/interfaces/response/IPosition';
 
 const ResultComponent = () => {
 
     const [isEmployeeIdExist, setIsEmployeeIdExist] = useState(true);
     const [isRendered, setIsRendered] = useState(false);
     const [data, setData] = useState({} as Partial<IEmployee>);
+    const [positions, setPositions] = useState([] as Partial<IPosition[]>);
     const {employeeId} = useParams();
 
     useEffect(() => {
         const checkExisting = async () => {
             await doRefreshData();
+            await fetchPosition();
             if (!data){ setIsEmployeeIdExist(false) }
             setIsRendered(true);
         }
         checkExisting();
     },[])
 
+    const fetchPosition = async () => {
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/master/position/get-all`,
+        }
+        const response = await getAxios<IResponse<IPosition[]>>(axiosOption);
+        setPositions(response.data.data)
+        return response;
+    }
+
     const doRefreshData = async () => {
         const response = await fetchEmployeeById(employeeId!);
         setData(response.data.data);
     }
 
-  
     const fetchEmployeeById = async (id: string) => {
         const axiosOption: AxiosRequestConfig = {
           url: `http://localhost:3001/api/master/employee/${id}`,
@@ -58,6 +75,11 @@ const ResultComponent = () => {
         console.log(data)
     };
 
+    const handleChangeSelect = async (e: SelectChangeEvent<unknown>, name: string) => {
+        await setData({...data, [name as keyof typeof data]: e.target.value})
+        console.log(data)
+    }
+
     const saveEditData = async (option: AxiosRequestConfig) => {
        
         const response = await putAxios(option)
@@ -67,17 +89,17 @@ const ResultComponent = () => {
     }
     
     const doSubmitForm = async (e:any) => {
-        console.log(data)
         var dataSend = new URLSearchParams();
         for (const propKey of Object.keys(data)) {
             const key = propKey as keyof IBaseEmployee;
             const ketString = key.toString();
-            if(data[key] && ketString !== 'position'){
+            console.log(key,'=', data[key])
+            if(data[key] !== null && ketString !== 'position'){
                 dataSend.append(propKey, data[key]!.toString());
             }
         }
-        // updateEmployeeById(employeeId!, dataSend);
-        // await doRefreshData();
+        await updateEmployeeById(employeeId!, dataSend);
+        await doRefreshData();
         
     }
 
@@ -90,10 +112,9 @@ const ResultComponent = () => {
                 <div className="actionForm"></div>
             </PanelHeader>
             <PanelBody>
-                <Grid container>  
-                    <Grid item lg={6} sm={12}>
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
+                <Grid container spacing={2}>  
+                    <Grid item lg={6} sm={8}>
+                        <TextField fullWidth
                             required
                             id="name"
                             key="employeeName"
@@ -103,125 +124,171 @@ const ResultComponent = () => {
                             defaultValue={data.name}
                             value={data.name}
                             />
-                            
-                        </FormControl>
+                   </Grid>
+                   <Grid item lg={3} sm={4}>         
 
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="machine-id"
-                                key="machineId"
-                                label="Machine Id"
-                                onChange={(e)=>{handleChange(e, "machineId")} }
-                                className="text-input"
-                                defaultValue={data.machineId}
-                                value={data.machineId}
-                                />
-                        </FormControl>
+                        <TextField 
+                            fullWidth
+                            required
+                            id="machine-id"
+                            key="machineId"
+                            label="Machine Id"
+                            onChange={(e)=>{handleChange(e, "machineId")} }
+                            className="text-input"
+                            defaultValue={data.machineId}
+                            value={data.machineId}
+                            />
+                    </Grid>
+                    <Grid item lg={3} sm={4}>        
 
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="gender"
-                                key="gender"
-                                label="Gender"
-                                onChange={(e)=>{handleChange(e, "gender")} }
-                                className="text-input"
-                                defaultValue={data.gender}
-                                value={data.gender}
-                                />
-                        </FormControl>
+                        <Select
+                            required
+                            id="gender"
+                            key="gender"
+                            label="Gender"
+                            onChange={(e)=>{handleChangeSelect(e, "gender")} }
+                            className="text-input"
+                            defaultValue={data.gender}
+                            value={data.gender}
+                            dataList={genderData}
+                            /> 
+                    </Grid>
+                    <Grid item lg={3} sm={4}>   
                         
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="employeeStatus"
-                                key="employeeStatus"
-                                label="Employee Status"
-                                onChange={(e)=>{handleChange(e, "employeeStatus")} }
-                                className="text-input"
-                                defaultValue={data.employeeStatus}
-                                value={data.employeeStatus}
-                                />
-                        </FormControl>
+                        <TextField 
+                            fullWidth
+                            required
+                            id="hireDate"
+                            key="hireDate"
+                            label="Hire Date"
+                            onChange={(e)=>{handleChange(e, "hireDate")} }
+                            className="text-input"
+                            defaultValue={data.hireDate}
+                            value={data.hireDate}
+                            helperText="Format dd/mm/yyyy"
+                            />
+                    </Grid>
+                    <Grid item lg={3} sm={4}>   
                         
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="hireDate"
-                                key="hireDate"
-                                label="Hire Date"
-                                onChange={(e)=>{handleChange(e, "hireDate")} }
-                                className="text-input"
-                                defaultValue={data.hireDate}
-                                value={data.hireDate}
-                                />
-                        </FormControl>
+                        <TextField 
+                            fullWidth
+                            required
+                            id="dateOfBirth"
+                            key="dateOfBirth"
+                            label="Date of Birth"
+                            onChange={(e)=>{handleChange(e, "dateOfBirth")} }
+                            className="text-input"
+                            defaultValue={data.dateOfBirth}
+                            value={data.dateOfBirth}
+                            helperText="Format dd/mm/yyyy"
+                            />
+                    </Grid>
+                    <Grid item lg={6} sm={6}>        
+                        <Select
+                            required
+                            id="position"
+                            key="position"
+                            label="Position"
+                            onChange={(e)=>{handleChangeSelect(e, "positionId")} }
+                            className="text-input"
+                            defaultValue={data.positionId}
+                            value={data.positionId}
+                            dataList={positions}
+                            /> 
+                    </Grid>
+                    {/* <Grid lg={6} sm={0}/> */}
+                    <Grid item lg={6} sm={6}>   
+                        <TextField 
+                            fullWidth
+                            required
+                            id="contactNumber"
+                            key="contactNumber"
+                            label="Contact Number"
+                            onChange={(e)=>{handleChange(e, "contactNumber")} }
+                            className="text-input"
+                            defaultValue={data.contactNumber}
+                            value={data.contactNumber}
+                            />
+                    </Grid>
+                    <Grid item lg={6} sm={6}>   
                         
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="dateOfBirth"
-                                key="dateOfBirth"
-                                label="Date of Birth"
-                                onChange={(e)=>{handleChange(e, "dateOfBirth")} }
-                                className="text-input"
-                                defaultValue={data.dateOfBirth}
-                                value={data.dateOfBirth}
-                                />
-                        </FormControl>
+                        <TextField 
+                            fullWidth
+                            required
+                            id="email"
+                            key="email"
+                            label="Email"
+                            onChange={(e)=>{handleChange(e, "email")} }
+                            className="text-input"
+                            defaultValue={data.email}
+                            value={data.email}
+                            />
+                    </Grid>
+                    <Grid item lg={6} sm={12}>   
                         
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="address"
-                                key="address"
-                                label="Address"
-                                onChange={(e)=>{handleChange(e, "address")} }
-                                className="text-input"
-                                defaultValue={data.address}
-                                value={data.address}
-                                />
-                        </FormControl>
+                        <TextField 
+                            fullWidth
+                            required
+                            multiline
+                            rows={4}
+                            id="address"
+                            key="address"
+                            label="Address"
+                            onChange={(e)=>{handleChange(e, "address")} }
+                            className="text-input"
+                            defaultValue={data.address}
+                            value={data.address}
+                            />
+                    </Grid>
+                    <Grid item lg={6} sm={12}>   
                         
-                        <FormControl fullWidth variant='filled' required>
+                        <TextField 
+                            fullWidth
+                            required
+                            multiline
+                            rows={4}
+                            id="description"
+                            key="description"
+                            label="Description"
+                            onChange={(e)=>{handleChange(e, "description")} }
+                            className="text-input"
+                            defaultValue={data.description}
+                            value={data.description}
+                            />
+                    </Grid>
+                    <Grid item lg={6} sm={12}>   
+                        <Select
+                            required
+                            id="employeeStatus"
+                            key="employeeStatus"
+                            label="Employee Status"
+                            onChange={(e)=>{handleChangeSelect(e, "employeeStatus")} }
+                            className="text-input"
+                            defaultValue={data.employeeStatus}
+                            value={data.employeeStatus}
+                            dataList={activeStatus}
+                            /> 
+                    </Grid>
+                    <Grid item lg={6} sm={12}>   
+                        <div style={{display: "flex", alignItems: "center"}}>
+                            <Checkbox  
+                            checked={data.activeFlatSalary}
+                            sx={{height: '42px'}}  
+                            onChange={(e)=>{setData({...data, activeFlatSalary: !data.activeFlatSalary});}} />
                             <TextField
+                                fullWidth
                                 required
-                                id="contactNumber"
-                                key="contactNumber"
-                                label="Contact Number"
-                                onChange={(e)=>{handleChange(e, "contactNumber")} }
+                                disabled={!data.activeFlatSalary}
+                                id="flatSalary"
+                                key="flatSalary"
+                                label="Flat Salary"
+                                onChange={(e)=>{handleChange(e, "flatSalary")} }
                                 className="text-input"
-                                defaultValue={data.contactNumber}
-                                value={data.contactNumber}
-                                />
-                        </FormControl>
+                                defaultValue={data.flatSalary}
+                                value={data.flatSalary}
+                                /> 
+                        </div>
                         
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="email"
-                                key="email"
-                                label="Email"
-                                onChange={(e)=>{handleChange(e, "email")} }
-                                className="text-input"
-                                defaultValue={data.email}
-                                value={data.email}
-                                />
-                        </FormControl>
-                        
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                                required
-                                id="description"
-                                key="description"
-                                label="Description"
-                                onChange={(e)=>{handleChange(e, "description")} }
-                                className="text-input"
-                                defaultValue={data.description}
-                                value={data.description}
-                                />
-                        </FormControl>
                     </Grid>
                 </Grid>
             </PanelBody>

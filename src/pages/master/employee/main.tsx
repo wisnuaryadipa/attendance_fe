@@ -35,6 +35,7 @@ export default function MainEmployee() {
     useEffect(() => {
         const loadData = async () => {
             const resFetch = await getAxios<IResponse<IEmployee[]>>(axiosOption);
+            console.log(resFetch.data.data)
             setEmployees(resFetch.data.data);
         }
 

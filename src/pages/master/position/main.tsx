@@ -24,23 +24,31 @@ export default function MainPosition() {
     const navigate = useNavigate();
     const [loadingData, setLoadingData] = useState(true);
     const [positions, setPositions] = useState([] as Partial<IPosition[]>);
-    const axiosOption: AxiosRequestConfig = {
-        url: 'http://localhost:3001/api/master/position/get-all',
-        method: "GET",
-    }
+    
 
 
     useEffect(() => {
         const loadData = async () => {
-            const resFetch = await test<IResponse<IPosition[]>>(axiosOption);
+            const resFetch = await fetchPositions();
+            console.log(resFetch.data.data);
             setPositions(resFetch.data.data);
         }
 
         if (loadingData) {
-        // if the result is not ready so you make the axios call
-        loadData();
+            // if the result is not ready so you make the axios call
+            loadData();
         }
     }, [])
+
+    const fetchPositions = async () => {
+        const axiosOption: AxiosRequestConfig = {
+            url: 'http://localhost:3001/api/master/position/get-all',
+            method: "GET",
+        }
+        
+        const resFetch = await test<IResponse<IPosition[]>>(axiosOption);
+        return resFetch;
+    }
 
     const SearchBox = styled.div`
         display: flex;
@@ -96,7 +104,7 @@ export default function MainPosition() {
                             {position.id}
                             </TableCell>
                             <TableCell align="left">{position.name}</TableCell>
-                            <TableCell align="center">{position.division}</TableCell>
+                            <TableCell align="center">{position.division.name}</TableCell>
                             <TableCell align="center">
                                 <NavLink to={`/master/position/${position.id}/edit`} replace={false} >
                                     <Button 

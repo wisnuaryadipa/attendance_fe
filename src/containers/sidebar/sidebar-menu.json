@@ -32,14 +32,14 @@
                 "url": "master/employee"
             },
             {
-                "itemName": "Division",
-                "iconName": "LineStyle",
-                "url": "master/division"
-            },
-            {
                 "itemName": "Position",
                 "iconName": "LineStyle",
                 "url": "master/position"
+            },
+            {
+                "itemName": "Division",
+                "iconName": "LineStyle",
+                "url": "master/division"
             }
         ]
         

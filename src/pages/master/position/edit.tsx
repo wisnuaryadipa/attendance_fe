@@ -154,6 +154,17 @@ const PositionEdit = () => {
                             defaultValue={data.description}
                             />
                         </FormControl>
+                        <FormControl fullWidth variant='filled' required>
+                            <TextField
+                            required
+                            id="divisionId"
+                            key="divisionId"
+                            label="Division"
+                            onChange={(e)=>{handleChange(e, "divisionId")} }
+                            className="text-input"
+                            defaultValue={data.divisionId}
+                            />
+                        </FormControl>
 
                     </Grid>
                 </Grid>
