@@ -19,7 +19,7 @@ const PositionAdd = (props: any) => {
 
     const [data, setData] = useState({} as Partial<IPosition>);
     const [divisions, setDivisions] = useState([] as IDivision[]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
 
@@ -29,7 +29,7 @@ const PositionAdd = (props: any) => {
             setLoading(false);
         }
         runAsync();
-    },[loading])
+    },[])
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
@@ -65,23 +65,24 @@ const PositionAdd = (props: any) => {
     }
     
     const doSubmitForm = async ()  => {
-        await setLoading(!loading);
+        setLoading(true);
         const dataSend = new URLSearchParams();
         for (const propKey of Object.keys(data)) {
             const key = propKey as keyof IBasePosition;
             const ketString = key.toString();
-            if(data[key] !== null && ketString !== 'employees' && ketString !== 'division'){
+            if(data[key] !== null && ketString !== 'employees' && ketString !== 'division' && data[key] !== ""){
                 dataSend.append(propKey, data[key]!.toString());
             }
         }
         const result = await addPosition(dataSend);
         if (result.status === 201) {
-            await setData({});
+            setData({});
             enqueueSnackbar(`Success saved ${result.data.data.name}`, { variant: 'success' });
         } else {
             enqueueSnackbar(`Failed saved`, { variant: 'error' });
         }
         setData({})
+        setLoading(false);
     }
 
     return (
@@ -113,6 +114,7 @@ const PositionAdd = (props: any) => {
                             onChange={(e)=>{handleChange(e, "name")} }
                             className="text-input"
                             defaultValue={data.name}
+                            value={data.name}
                             />
                     </Grid>
                     <Grid item xs={12} lg={6} sm={12}>
@@ -139,6 +141,7 @@ const PositionAdd = (props: any) => {
                             onChange={(e)=>{handleChange(e, "basicSalary")} }
                             className="text-input"
                             defaultValue={data.basicSalary}
+                            value={data.basicSalary}
                             />
                     </Grid>
                     <Grid item xs={12} lg={3} sm={6}>
@@ -151,6 +154,7 @@ const PositionAdd = (props: any) => {
                             onChange={(e)=>{handleChange(e, "wagePerHour")} }
                             className="text-input"
                             defaultValue={data.wagePerHour}
+                            value={data.wagePerHour}
                             />
                     </Grid>
                     <Grid item xs={12} lg={3} sm={6}>
@@ -163,6 +167,7 @@ const PositionAdd = (props: any) => {
                             onChange={(e)=>{handleChange(e, "overtimeWagePerHour")} }
                             className="text-input"
                             defaultValue={data.overtimeWagePerHour}
+                            value={data.overtimeWagePerHour}
                             />
                     </Grid>
                     <Grid item xs={12} lg={6} sm={12}>
@@ -177,6 +182,7 @@ const PositionAdd = (props: any) => {
                             onChange={(e)=>{handleChange(e, "defaultWorkingHour")} }
                             className="text-input"
                             defaultValue={data.defaultWorkingHour}
+                            value={data.defaultWorkingHour}
                             />
                     </Grid>
                     <Grid item xs={12} lg={6} sm={12}>
@@ -191,6 +197,7 @@ const PositionAdd = (props: any) => {
                             onChange={(e)=>{handleChange(e, "description")} }
                             className="text-input"
                             defaultValue={data.description}
+                            value={data.description}
                             />
                     </Grid>
                 </Grid>

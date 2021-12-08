@@ -22,7 +22,7 @@ import Backdrop from '@mui/material/Backdrop';
 
 const ResultComponent = (props: any) => {
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState({} as Partial<IEmployee>);
     const [positions, setPositions] = useState([] as Partial<IPosition[]>);
 
@@ -32,7 +32,7 @@ const ResultComponent = (props: any) => {
             setLoading(false);
         }
         checkExisting();
-    },[loading])
+    },[])
 
     const fetchPosition = async () => {
         const axiosOption: AxiosRequestConfig = {
@@ -66,7 +66,6 @@ const ResultComponent = (props: any) => {
     const saveData = async (option: AxiosRequestConfig) => {
         const response = await postAxios(option)
         console.log(response);
-        alert("Input Data Success !");
     }
     
     const doSubmitForm = async ()  => {
@@ -75,11 +74,12 @@ const ResultComponent = (props: any) => {
         for (const propKey of Object.keys(data)) {
             const key = propKey as keyof IBaseEmployee;
             const keyString = key.toString();
-            if(data[key] !== null && keyString !== 'position'){
+            if(data[key] !== null && keyString !== 'position' && data[key] !== ""){
                 dataSend.append(propKey, data[key]!.toString());
             }
         }
         await addEmployee(dataSend);
+        setLoading(false)
     }
 
     return (
@@ -91,7 +91,7 @@ const ResultComponent = (props: any) => {
                 <CircularProgress color="inherit" />
             </Backdrop>
             <PanelHeader>
-                <Typography className="titleForm" variant='h5'>Edit Employee Form</Typography>
+                <Typography className="titleForm" variant='h5'>Create Employee Form</Typography>
                 <div className="actionForm"></div>
             </PanelHeader>
             <PanelBody>

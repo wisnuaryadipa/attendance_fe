@@ -36,7 +36,7 @@ const PositionEdit = () => {
             setLoading(false);
         }
         checkExisting();
-    },[loading])
+    },[])
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
@@ -100,6 +100,7 @@ const PositionEdit = () => {
         } else {
             enqueueSnackbar(`Failed saved`, { variant: 'error' });
         }
+        setLoading(false);
     }
 
     if (!isPositionIdExist){ return (<NotFoundPage/>)}

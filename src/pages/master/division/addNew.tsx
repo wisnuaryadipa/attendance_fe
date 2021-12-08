@@ -22,10 +22,11 @@ const ResultComponent = (props: any) => {
             setLoading(false)
         }
         loadAsync();
-    }, [loading])
+    }, [])
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
+        console.log(data)
     };
 
     const addDivision = async (data: URLSearchParams) => {
@@ -48,14 +49,15 @@ const ResultComponent = (props: any) => {
     const doSubmitForm = async ()  => {
         setLoading(true);
         const dataSend = new URLSearchParams();
-        for ( const propKey in Object.keys(data)) {
+        for ( const propKey of Object.keys(data)) {
             const key = propKey as keyof IBaseDivision;
             const keyString = key.toString();
-            if(data[key] !== null && keyString === "positions"){
-                dataSend.append(key, data[key]!.toString())
+            if(data[key] !== null && keyString !== "positions" && data[key] !== ""){
+                dataSend.append(propKey, data[key]!.toString())
             }
         }
         await addDivision(dataSend);
+        setLoading(true);
     }
 
     return (
@@ -86,6 +88,7 @@ const ResultComponent = (props: any) => {
                             onChange={(e)=>{handleChange(e, "name")} }
                             className="text-input"
                             defaultValue={data.name}
+                            value={data.name}
                             />
                         </FormControl>
                     </Grid>

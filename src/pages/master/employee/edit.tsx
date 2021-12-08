@@ -25,7 +25,7 @@ const ResultComponent = () => {
 
     const [isEmployeeIdExist, setIsEmployeeIdExist] = useState(true);
     const [isRendered, setIsRendered] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState({} as Partial<IEmployee>);
     const [positions, setPositions] = useState([] as Partial<IPosition[]>);
     const {employeeId} = useParams();
@@ -36,10 +36,9 @@ const ResultComponent = () => {
             await fetchPosition();
             if (!data){ setIsEmployeeIdExist(false) }
             setIsRendered(true);
-            setLoading(false);
         }
         checkExisting();
-    },[loading])
+    },[])
 
     const fetchPosition = async () => {
         const axiosOption: AxiosRequestConfig = {
@@ -52,7 +51,8 @@ const ResultComponent = () => {
 
     const doRefreshData = async () => {
         const response = await fetchEmployeeById(employeeId!);
-        setData(response.data.data);
+        
+        setData({...response.data.data});
     }
 
     const fetchEmployeeById = async (id: string) => {
@@ -84,11 +84,8 @@ const ResultComponent = () => {
     }
 
     const saveEditData = async (option: AxiosRequestConfig) => {
-       
         const response = await putAxios(option)
-
         console.log(response);
-        alert("Input Data Success !");
     }
     
     const doSubmitForm = async (e:any) => {
@@ -97,13 +94,13 @@ const ResultComponent = () => {
         for (const propKey of Object.keys(data)) {
             const key = propKey as keyof IBaseEmployee;
             const ketString = key.toString();
-            console.log(key,'=', data[key])
             if(data[key] !== null && ketString !== 'position'){
                 dataSend.append(propKey, data[key]!.toString());
             }
         }
+
         await updateEmployeeById(employeeId!, dataSend);
-        await doRefreshData();
+        setLoading(false);
         
     }
 
@@ -294,7 +291,6 @@ const ResultComponent = () => {
                                 label="Flat Salary"
                                 onChange={(e)=>{handleChange(e, "flatSalary")} }
                                 className="text-input"
-                                defaultValue={data.flatSalary}
                                 value={data.flatSalary}
                                 /> 
                         </div>

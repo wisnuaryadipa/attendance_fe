@@ -29,17 +29,20 @@ const ResultComponent = (props: any): JSX.Element => {
     useEffect(() => {
         const checkExisting = async () => {
             const response = await fetchDivisionById(divisionId!);
-            setData(response);
             if (!response.data.data){ 
                 setIsDivisionIdExist(false) 
             } else {
                 setData(response.data.data)
             }
-            setLoading(false)
             setIsRendered(true);
         }
         checkExisting();
-    },[divisionId, loading])
+    },[divisionId])
+
+    useEffect(() => {
+
+        setLoading(false)
+    },[])
 
     const fetchDivisionById = async (id: string) => {
         const axiosOption: AxiosRequestConfig = {
@@ -71,16 +74,17 @@ const ResultComponent = (props: any): JSX.Element => {
     
     const doSubmitForm = async () => {
         setLoading(true);
-
         const dataSend = new URLSearchParams();
-        for ( const propKey in Object.keys(data)) {
+        for ( const propKey of Object.keys(data)) {
             const key = propKey as keyof IBaseDivision;
             const keyString = key.toString();
-            if(data[key] !== null && keyString === "positions"){
-                dataSend.append(key, data[key]!.toString())
+            if(data[key] !== null && keyString !== "positions"){
+                console.log(key)
+                dataSend.append(propKey, data[key]!.toString())
             }
         }
         await addDivision(dataSend)
+        setLoading(false);
     }
 
     const result = (
@@ -107,6 +111,7 @@ const ResultComponent = (props: any): JSX.Element => {
                             onChange={(e) => {handleChange(e, 'name')} }
                             className="text-input"
                             defaultValue={data.name}
+                            value={data.name}
                             />
                             
                         </FormControl>
