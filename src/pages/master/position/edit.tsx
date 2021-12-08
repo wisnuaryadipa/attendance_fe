@@ -6,35 +6,60 @@ import FormControl from '@mui/material/FormControl';
 import axios, { AxiosRequestConfig } from 'axios';
 import Typography from '@mui/material/Typography';
 import NotFoundPage from '@pages/404'
-import IPosition from '@interfaces/response/IPosition'
+import IPosition, { IBasePosition } from '@interfaces/response/IPosition'
 import IResponse from '@interfaces/response/IResponse'
 import { useParams, useNavigate } from 'react-router-dom';
 import { putAxios, getAxios } from '@services/axios';
 import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel';
+import Select from '@src/components/Select/Select';
+import IDivision from '@src/interfaces/response/IDivision';
+import { SelectChangeEvent } from '@mui/material/Select';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useSnackbar, SnackbarProvider } from 'notistack';
 
 const PositionEdit = () => {
-
-
-
     const [isPositionIdExist, setIsPositionIdExist] = useState(true);
     const [isRendered, setIsRendered] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [divisions, setDivisions] = useState([] as Partial<IDivision[]>);
     const [data, setData] = useState({} as Partial<IPosition>);
     const {positionId} = useParams();
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         const checkExisting = async () => {
-            await doRefreshData();
-            if (!data){ setIsPositionIdExist(false) }
+            const fetchData = await doRefreshData();
+            await fetchDivisions();
+            if (!fetchData.data.data){ setIsPositionIdExist(false) }
             setIsRendered(true);
+            setLoading(false);
         }
         checkExisting();
-    },[])
+    },[loading])
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
+        setData({...data, [name as keyof typeof data]: event.target.value})
+    };
+
+    const handleChangeSelect = async (e: SelectChangeEvent<unknown>, name: string) => {
+        await setData({...data, [name as keyof typeof data]: e.target.value})
+    }
+    
+    const fetchDivisions = async () => {
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/master/division/get-all`,
+        }
+        const response = await getAxios<IResponse<IDivision[]>>(axiosOption);
+        setDivisions(response.data.data)
+        return response;
+    }
 
     const doRefreshData = async () => {
         const response = await fetchPositionById(positionId!);
         setData(response.data.data);
+        return response;
     }
-
   
     const fetchPositionById = async (id: string) => {
         const axiosOption: AxiosRequestConfig = {
@@ -51,29 +76,29 @@ const PositionEdit = () => {
             data: data,
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         }
-        await saveEditData(axiosOption);
+        return await saveEditData(axiosOption);
     }
-    
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
-        setData({...data, [name as keyof typeof data]: event.target.value})
-        console.log(data[name as keyof typeof data])
-    };
 
     const saveEditData = async (option: AxiosRequestConfig) => {
-        const response = await putAxios(option)
-        console.log(response);
-        alert("Input Data Success !");
+        const response = await putAxios<IResponse<IPosition>>(option)
+        return response;
     }
     
-    const doSubmitForm = async (e:any) => {
-        if(data.name) {
-            var dataSend = new URLSearchParams();
-            dataSend.append('name', data.name);
-    
-            updatePositionById(positionId!, dataSend);
-            await doRefreshData();
+    const doSubmitForm = async () => {
+        setLoading(true);
+        const dataSend = new URLSearchParams();
+        for (const propKey of Object.keys(data)) {
+            const key = propKey as keyof IBasePosition;
+            const ketString = key.toString();
+            if(data[key] !== null && ketString !== 'employees' && ketString !== 'division'){
+                dataSend.append(propKey, data[key]!.toString());
+            }
+        }
+        const result = await updatePositionById(positionId!, dataSend);
+        if (result.status === 201) {
+            enqueueSnackbar(`Success saved ${result.data.data.name}`, { variant: 'success' });
         } else {
-            alert("Please fill all required input form !");
+            enqueueSnackbar(`Failed saved`, { variant: 'error' });
         }
     }
 
@@ -81,15 +106,21 @@ const PositionEdit = () => {
 
     const result = (
         <Panel>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <PanelHeader>
                 <Typography className="titleForm" variant='h5'>Edit Position Form</Typography>
                 <div className="actionForm"></div>
             </PanelHeader>
             <PanelBody>
-                <Grid container>  
-                    <Grid item lg={6} sm={12}>
-                        <FormControl fullWidth variant='filled' required>
+            <Grid container spacing={2}>  
+                    <Grid item xs={12} lg={6} sm={12}>
                             <TextField
+                            fullWidth
                             required
                             id="name"
                             key="name"
@@ -97,10 +128,26 @@ const PositionEdit = () => {
                             onChange={(e)=>{handleChange(e, "name")} }
                             className="text-input"
                             defaultValue={data.name}
+                            value={data.name}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={6} sm={12}>
+                        <Select
+                            required
+                            id="divisionId"
+                            key="divisionId"
+                            label="Division"
+                            onChange={(e)=>{handleChangeSelect(e, "divisionId")} }
+                            className="text-input"
+                            defaultValue={data.divisionId}
+                            value={data.divisionId}
+                            dataList={divisions}
+                            /> 
+
+                    </Grid>
+                    <Grid item xs={12} lg={3} sm={6}>
                             <TextField
+                            fullWidth
                             required
                             id="basicSalary"
                             key="basicSalary"
@@ -108,10 +155,12 @@ const PositionEdit = () => {
                             onChange={(e)=>{handleChange(e, "basicSalary")} }
                             className="text-input"
                             defaultValue={data.basicSalary}
+                            value={data.basicSalary}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={3} sm={6}>
                             <TextField
+                            fullWidth
                             required
                             id="wagePerHour"
                             key="wagePerHour"
@@ -119,10 +168,12 @@ const PositionEdit = () => {
                             onChange={(e)=>{handleChange(e, "wagePerHour")} }
                             className="text-input"
                             defaultValue={data.wagePerHour}
+                            value={data.wagePerHour}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={3} sm={6}>
                             <TextField
+                            fullWidth
                             required
                             id="overtimeWagePerHour"
                             key="overtimeWagePerHour"
@@ -130,42 +181,38 @@ const PositionEdit = () => {
                             onChange={(e)=>{handleChange(e, "overtimeWagePerHour")} }
                             className="text-input"
                             defaultValue={data.overtimeWagePerHour}
+                            value={data.overtimeWagePerHour}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={6} sm={12}>
                             <TextField
+                            fullWidth
                             required
+                            multiline
+                            rows={3}
                             id="defaultWorkingHour"
                             key="defaultWorkingHour"
                             label="Default Working Hour"
                             onChange={(e)=>{handleChange(e, "defaultWorkingHour")} }
                             className="text-input"
                             defaultValue={data.defaultWorkingHour}
+                            value={data.defaultWorkingHour}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={6} sm={12}>
                             <TextField
+                            fullWidth
                             required
+                            multiline
+                            rows={3}
                             id="description"
                             key="description"
                             label="Description"
                             onChange={(e)=>{handleChange(e, "description")} }
                             className="text-input"
                             defaultValue={data.description}
+                            value={data.description}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                            required
-                            id="divisionId"
-                            key="divisionId"
-                            label="Division"
-                            onChange={(e)=>{handleChange(e, "divisionId")} }
-                            className="text-input"
-                            defaultValue={data.divisionId}
-                            />
-                        </FormControl>
-
                     </Grid>
                 </Grid>
             </PanelBody>
@@ -188,4 +235,12 @@ const PositionEdit = () => {
     return isRendered ? result : <div></div>
 }
 
-export default PositionEdit
+const Wrapper = () => {
+    return (
+        <SnackbarProvider maxSnack={3}>
+            <PositionEdit />
+        </SnackbarProvider>
+    )
+}
+
+export default Wrapper;

@@ -18,11 +18,14 @@ import {activeStatus} from '@src/static/common';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import IPosition from 'src/interfaces/response/IPosition';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 
 const ResultComponent = () => {
 
     const [isEmployeeIdExist, setIsEmployeeIdExist] = useState(true);
     const [isRendered, setIsRendered] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState({} as Partial<IEmployee>);
     const [positions, setPositions] = useState([] as Partial<IPosition[]>);
     const {employeeId} = useParams();
@@ -33,9 +36,10 @@ const ResultComponent = () => {
             await fetchPosition();
             if (!data){ setIsEmployeeIdExist(false) }
             setIsRendered(true);
+            setLoading(false);
         }
         checkExisting();
-    },[])
+    },[loading])
 
     const fetchPosition = async () => {
         const axiosOption: AxiosRequestConfig = {
@@ -66,7 +70,6 @@ const ResultComponent = () => {
             data: data,
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         }
-        
         await saveEditData(axiosOption);
     }
     
@@ -89,6 +92,7 @@ const ResultComponent = () => {
     }
     
     const doSubmitForm = async (e:any) => {
+        setLoading(true);
         var dataSend = new URLSearchParams();
         for (const propKey of Object.keys(data)) {
             const key = propKey as keyof IBaseEmployee;
@@ -107,6 +111,12 @@ const ResultComponent = () => {
 
     const result = (
         <Panel>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <PanelHeader>
                 <Typography className="titleForm" variant='h5'>Edit Employee Form</Typography>
                 <div className="actionForm"></div>

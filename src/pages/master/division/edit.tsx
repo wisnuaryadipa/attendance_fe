@@ -11,14 +11,17 @@ import Typography from '@mui/material/Typography';
 import NotFoundPage from '@pages/404';
 import { useParams, useNavigate } from 'react-router-dom';
 import { putAxios, getAxios } from '@services/axios';
-import IDivision from '@interfaces/response/IDivision';
+import IDivision, { IBaseDivision } from '@interfaces/response/IDivision';
 import IResponse from '@interfaces/response/IResponse';
 import {Panel, PanelBody, PanelHeader, PanelFooter} from '@components/panel';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 
 const ResultComponent = (props: any): JSX.Element => {
 
     const [isDivisionIdExist, setIsDivisionIdExist] = useState(true);
     const [isRendered, setIsRendered] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState({} as Partial<IDivision>);
     const {divisionId} = useParams();
     const navigate = useNavigate();
@@ -32,10 +35,11 @@ const ResultComponent = (props: any): JSX.Element => {
             } else {
                 setData(response.data.data)
             }
+            setLoading(false)
             setIsRendered(true);
         }
         checkExisting();
-    },[])
+    },[divisionId, loading])
 
     const fetchDivisionById = async (id: string) => {
         const axiosOption: AxiosRequestConfig = {
@@ -50,32 +54,43 @@ const ResultComponent = (props: any): JSX.Element => {
         console.log(data[name as keyof typeof data])
     };
 
+    const addDivision = async (data: URLSearchParams) => {
+        const option: any = {
+            url: `http://localhost:3001/api/master/division/edit/${divisionId}`,
+            method: "PUT",
+            data: data,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        }
+        await saveEditData(option);
+    }
+
     const saveEditData = async (option: AxiosRequestConfig) => {
         const response = await putAxios(option)
-        console.log(response);
-        alert("Input Data Success !");
+        return response;
     }
     
-    const doSubmitForm = async (e:any) => {
-        if(data.name) {
-            var url = `http://localhost:3001/api/master/division/edit/${divisionId}`;
-            var bodyFormData = new URLSearchParams();
-            bodyFormData.append('name', data.name);
-    
-            const option: any = {
-                url: url,
-                method: "PUT",
-                data: bodyFormData,
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+    const doSubmitForm = async () => {
+        setLoading(true);
+
+        const dataSend = new URLSearchParams();
+        for ( const propKey in Object.keys(data)) {
+            const key = propKey as keyof IBaseDivision;
+            const keyString = key.toString();
+            if(data[key] !== null && keyString === "positions"){
+                dataSend.append(key, data[key]!.toString())
             }
-            await saveEditData(option);
-        } else {
-            alert("Please fill all required input form !");
         }
+        await addDivision(dataSend)
     }
 
     const result = (
         <Panel>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <PanelHeader> 
                 <Typography className="titleForm" variant='h5'>Edit Division Form</Typography>
                 <div className="actionForm"></div>

@@ -1,49 +1,98 @@
-import react, { useState } from 'react';
+import react, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import FormControl from '@mui/material/FormControl';
 import axios, {AxiosRequestConfig} from 'axios';
 import Typography from '@mui/material/Typography';
-import IPosition from 'src/interfaces/response/IPosition';
-import {postAxios} from '@services/axios';
+import IPosition, { IBasePosition } from '@src/interfaces/response/IPosition';
+import {getAxios, postAxios} from '@services/axios';
 import {Panel, PanelBody, PanelHeader, PanelFooter} from '@components/panel';
-
+import IDivision from '@src/interfaces/response/IDivision';
+import IResponse from '@src/interfaces/response/IResponse';
+import Select from '@src/components/Select/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 
 const PositionAdd = (props: any) => {
 
     const [data, setData] = useState({} as Partial<IPosition>);
+    const [divisions, setDivisions] = useState([] as IDivision[]);
+    const [loading, setLoading] = useState(true);
+    const { enqueueSnackbar } = useSnackbar();
+
+
+    useEffect(() => {
+        const runAsync = async () => {
+            await fetchDivisions();
+            setLoading(false);
+        }
+        runAsync();
+    },[loading])
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
     };
 
+    const handleChangeSelect = async (e: SelectChangeEvent<unknown>, name: string) => {
+        await setData({...data, [name as keyof typeof data]: e.target.value})
+    }
+
     const saveData = async (option: AxiosRequestConfig) => {
         const response = await postAxios(option)
-        console.log(response);
-        alert("Input Data Success !");
+        return response;
     }
     
-    const doSubmitForm = async (e:any)  => {
-        if(data.name ) {
-            const url = "http://localhost:3001/api/master/position/add";
-            const bodyFormData = new URLSearchParams();
-            bodyFormData.append('name', data.name);
-            const axiosOption: AxiosRequestConfig = {
-                url: url,
-                data: bodyFormData,
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            }
-            console.log(data)
-            await saveData(axiosOption);
-        } else {
-            alert("Please fill all required input form !");
+    const fetchDivisions = async () => {
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/master/division/get-all`,
         }
+        const response = await getAxios<IResponse<IDivision[]>>(axiosOption);
+        setDivisions(response.data.data)
+        return response;
+    }
+
+    const addPosition = async (data: URLSearchParams) => {
+        const axiosOption: AxiosRequestConfig = {
+            url: "http://localhost:3001/api/master/position/add",
+            data: data,
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        }
+        const result = await saveData(axiosOption);
+        return result;
+    }
+    
+    const doSubmitForm = async ()  => {
+        await setLoading(!loading);
+        const dataSend = new URLSearchParams();
+        for (const propKey of Object.keys(data)) {
+            const key = propKey as keyof IBasePosition;
+            const ketString = key.toString();
+            if(data[key] !== null && ketString !== 'employees' && ketString !== 'division'){
+                dataSend.append(propKey, data[key]!.toString());
+            }
+        }
+        const result = await addPosition(dataSend);
+        if (result.status === 201) {
+            await setData({});
+            enqueueSnackbar(`Success saved ${result.data.data.name}`, { variant: 'success' });
+        } else {
+            enqueueSnackbar(`Failed saved`, { variant: 'error' });
+        }
+        setData({})
     }
 
     return (
         <Panel>
+            
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <PanelHeader>
                 <Typography 
                 className="titleForm" 
@@ -53,10 +102,10 @@ const PositionAdd = (props: any) => {
                 <div className="actionForm"></div>
             </PanelHeader>
             <PanelBody>
-                <Grid container>  
-                    <Grid item lg={6} sm={12}>
-                        <FormControl fullWidth variant='filled' required>
+                <Grid container spacing={2}>  
+                    <Grid item xs={12} lg={6} sm={12}>
                             <TextField
+                            fullWidth
                             required
                             id="name"
                             key="name"
@@ -65,9 +114,24 @@ const PositionAdd = (props: any) => {
                             className="text-input"
                             defaultValue={data.name}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={6} sm={12}>
+                        <Select
+                            required
+                            id="divisionId"
+                            key="divisionId"
+                            label="Division"
+                            onChange={(e)=>{handleChangeSelect(e, "divisionId")} }
+                            className="text-input"
+                            defaultValue={data.divisionId}
+                            value={data.divisionId}
+                            dataList={divisions}
+                            /> 
+
+                    </Grid>
+                    <Grid item xs={12} lg={3} sm={6}>
                             <TextField
+                            fullWidth
                             required
                             id="basicSalary"
                             key="basicSalary"
@@ -76,9 +140,10 @@ const PositionAdd = (props: any) => {
                             className="text-input"
                             defaultValue={data.basicSalary}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={3} sm={6}>
                             <TextField
+                            fullWidth
                             required
                             id="wagePerHour"
                             key="wagePerHour"
@@ -87,9 +152,10 @@ const PositionAdd = (props: any) => {
                             className="text-input"
                             defaultValue={data.wagePerHour}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={3} sm={6}>
                             <TextField
+                            fullWidth
                             required
                             id="overtimeWagePerHour"
                             key="overtimeWagePerHour"
@@ -98,10 +164,13 @@ const PositionAdd = (props: any) => {
                             className="text-input"
                             defaultValue={data.overtimeWagePerHour}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={6} sm={12}>
                             <TextField
+                            fullWidth
                             required
+                            multiline
+                            rows={3}
                             id="defaultWorkingHour"
                             key="defaultWorkingHour"
                             label="Default Working Hour"
@@ -109,10 +178,13 @@ const PositionAdd = (props: any) => {
                             className="text-input"
                             defaultValue={data.defaultWorkingHour}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
+                    </Grid>
+                    <Grid item xs={12} lg={6} sm={12}>
                             <TextField
+                            fullWidth
                             required
+                            multiline
+                            rows={3}
                             id="description"
                             key="description"
                             label="Description"
@@ -120,19 +192,6 @@ const PositionAdd = (props: any) => {
                             className="text-input"
                             defaultValue={data.description}
                             />
-                        </FormControl>
-                        <FormControl fullWidth variant='filled' required>
-                            <TextField
-                            required
-                            id="divisionId"
-                            key="divisionId"
-                            label="Division"
-                            onChange={(e)=>{handleChange(e, "divisionId")} }
-                            className="text-input"
-                            defaultValue={data.divisionId}
-                            />
-                        </FormControl>
-
                     </Grid>
                 </Grid>
             </PanelBody>
@@ -153,4 +212,12 @@ const PositionAdd = (props: any) => {
 
 }
 
-export default PositionAdd
+const Wrapper = () => {
+    return (
+        <SnackbarProvider maxSnack={3}>
+            <PositionAdd />
+        </SnackbarProvider>
+    )
+}
+
+export default Wrapper;

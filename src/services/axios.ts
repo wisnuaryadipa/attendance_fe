@@ -1,25 +1,39 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosResponse<any>> => {
     try {
-        return await axios.post(option.url!, option.data, option)
+        const result = await axios.post(option.url!, option.data, option);
+        alert("Input Data Success !");
+        return result
     } catch (err) {
         alert(err);
-        throw err;
+        if (axios.isAxiosError(err)){
+            const result = err.response!
+            return result;
+        } else {
+            throw err;
+        }
     }
 }
 
 export const getAxios = async <T>(option: AxiosRequestConfig) => {
-        const data = await axios.get(option.url!, option).catch(err => { alert(err) }) as AxiosResponse<T>;
-        return data;
+    const data = await axios.get(option.url!, option).catch(err => { alert(err) }) as AxiosResponse<T>;
+    return data;
 }
 
 export const putAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
     try {
-        return await axios.put(option.url!, option.data, option);
+        const result = await axios.put(option.url!, option.data, option);
+        alert("Input Data Success !");
+        return result;
     } catch (err) {
         alert(err);
-        throw err;
+        if (axios.isAxiosError(err)){
+            const result = err.response!
+            return result;
+        } else {
+            throw err;
+        }
     }
 }
 

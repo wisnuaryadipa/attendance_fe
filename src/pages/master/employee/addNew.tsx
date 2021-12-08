@@ -16,21 +16,23 @@ import { activeStatus } from '@src/static/common';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 import Switch from '@mui/material/Switch';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 
 
 const ResultComponent = (props: any) => {
 
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState({} as Partial<IEmployee>);
     const [positions, setPositions] = useState([] as Partial<IPosition[]>);
-
-    
 
     useEffect(() => {
         const checkExisting = async () => {
             await fetchPosition();
+            setLoading(false);
         }
         checkExisting();
-    },[])
+    },[loading])
 
     const fetchPosition = async () => {
         const axiosOption: AxiosRequestConfig = {
@@ -39,6 +41,17 @@ const ResultComponent = (props: any) => {
         const response = await getAxios<IResponse<IPosition[]>>(axiosOption);
         setPositions(response.data.data)
         return response;
+    }
+    
+    const addEmployee = async (data: URLSearchParams) => {
+        const url = "http://localhost:3001/api/master/employee/add";
+        const axiosOption: AxiosRequestConfig = {
+            url: url,
+            data: data,
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        }
+        await saveData(axiosOption);
     }
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
@@ -56,24 +69,13 @@ const ResultComponent = (props: any) => {
         alert("Input Data Success !");
     }
     
-    const addEmployee = async (data: URLSearchParams) => {
-        const url = "http://localhost:3001/api/master/employee/add";
-        const axiosOption: AxiosRequestConfig = {
-            url: url,
-            data: data,
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" }
-        }
-        
-        await saveData(axiosOption);
-    }
-    
-    const doSubmitForm = async (e:any)  => {
+    const doSubmitForm = async ()  => {
+        setLoading(true)
         const dataSend = new URLSearchParams();
         for (const propKey of Object.keys(data)) {
             const key = propKey as keyof IBaseEmployee;
-            const ketString = key.toString();
-            if(data[key] !== null && ketString !== 'position'){
+            const keyString = key.toString();
+            if(data[key] !== null && keyString !== 'position'){
                 dataSend.append(propKey, data[key]!.toString());
             }
         }
@@ -82,6 +84,12 @@ const ResultComponent = (props: any) => {
 
     return (
         <Panel>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <PanelHeader>
                 <Typography className="titleForm" variant='h5'>Edit Employee Form</Typography>
                 <div className="actionForm"></div>
