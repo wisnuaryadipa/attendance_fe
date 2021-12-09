@@ -10,7 +10,7 @@ import IRoute, {IRoutes} from '@interfaces/IRoute';
 const masterRoutes: IRoutes = [
     {
         path: "/",
-        pageComponent: Master
+        pageComponent: Attendance.MainAttendance
     },
     {
         path: "/upload",
