@@ -12,6 +12,7 @@ module.exports = {
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@services": path.resolve(__dirname, "./src/services"),
       "@types": path.resolve(__dirname, "./src/types"),
+      "@public": path.resolve(__dirname, "./public"),
       "@root": path.resolve(__dirname, "./"),
     },
   },

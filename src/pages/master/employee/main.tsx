@@ -4,6 +4,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button'
 import TableRow from '@mui/material/TableRow';
 import InputBase from '@mui/material/InputBase';
@@ -16,6 +17,7 @@ import IEmployee from '@interfaces/response/IEmployee';
 import IResponse from '@interfaces/response/IResponse';
 import { Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
 import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel';
 
@@ -52,6 +54,10 @@ export default function MainEmployee() {
     const clickToEdit = (e: MouseEvent<HTMLButtonElement>, id:number) => {
         navigate(`/master/employee/${id}/edit`, {replace: false})
     }
+
+    const ActionBox = styled(NavLink)`
+        margin-right: 5px;
+    `
 
     return (
         <Panel className="masterEmploye wrapper">
@@ -103,13 +109,23 @@ export default function MainEmployee() {
                             <TableCell align="center">{employee.position ? employee.position.name : ""}</TableCell>
                             <TableCell align="center">{employee.machineId}</TableCell>
                             <TableCell align="center">
-                                <NavLink to={`/master/employee/${employee.id}/edit`} replace={false} >
-                                    <Button 
-                                    variant='contained' 
-                                    color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
-                                        <EditIcon sx={{width: '20px !important'}} />
-                                    </Button>
-                                </NavLink>
+                                <Box>
+                                    <ActionBox to={`/master/employee/${employee.id}/edit`} replace={false} >
+                                        <Button 
+                                        variant='contained' 
+                                        color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
+                                            <EditIcon sx={{width: '20px !important'}} />
+                                        </Button>
+                                    </ActionBox>
+                                    <ActionBox to={`/master/employee/${employee.id}`} replace={false} >
+                                        <Button 
+                                        variant='contained' 
+                                        color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
+                                            <ArticleIcon sx={{width: '20px !important'}} />
+                                        </Button>
+                                    </ActionBox>
+                                </Box>
+                                
                             </TableCell>
                         </TableRow>
                         ))}

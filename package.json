@@ -17,6 +17,7 @@
     "normalize-url": "^7.0.2",
     "notistack": "^2.0.3",
     "react": "latest",
+    "react-big-calendar": "^0.38.1",
     "react-dom": "latest",
     "react-router": "^6.0.2",
     "react-router-dom": "^6.0.2",
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@craco/craco": "^6.4.1",
     "@types/loadable__component": "^5.13.4",
+    "@types/react-big-calendar": "^0.36.2",
     "@types/styled-components": "^5.1.15"
   }
 }

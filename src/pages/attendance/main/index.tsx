@@ -9,17 +9,17 @@ const Main = () => {
 
 
     return (
-                <Grid container item spacing={3}>
-                    <Grid item lg={4} sm={6} >
-                        <TotalEmployee/>
-                    </Grid>
-                    <Grid item lg={4} sm={6} >
-                        <TotalOvertime/>
-                    </Grid>
-                    <Grid item lg={12} sm={12} >
-                        <MonthlyAttendancePerDivision/>
-                    </Grid>
-                </Grid>
+        <Grid container spacing={3}>
+            <Grid item lg={4} sm={6} >
+                <TotalEmployee/>
+            </Grid>
+            <Grid item lg={4} sm={6} >
+                <TotalOvertime/>
+            </Grid>
+            <Grid item lg={12} sm={12} >
+                <MonthlyAttendancePerDivision/>
+            </Grid>
+        </Grid>
         
     )
 }

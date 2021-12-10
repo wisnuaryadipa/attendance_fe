@@ -12,6 +12,7 @@
             "@pages/*": ["./src/pages/*"],
             "@services/*": ["./src/services/*"],
             "@types/*": ["./src/types/*"],
+            "@public/*": ["./public/*"],
             "@root/*": ["*"]
         },
     }

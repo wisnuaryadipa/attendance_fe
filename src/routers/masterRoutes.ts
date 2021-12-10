@@ -27,7 +27,7 @@ const masterRoutes: IRoutes = [
     },
     {
         path: "/employee/:employeeId",
-        pageComponent: MainBar
+        pageComponent: MasterEmployee.Detail,
     },
     {
         path: "/employee/:employeeId/edit",

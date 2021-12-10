@@ -8,6 +8,7 @@ import MainBar from '@containers/mainbar';
 import ProTip from './ProTip';
 import Router from '@routers/index'
 
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 function Copyright() {
   return (
@@ -23,7 +24,7 @@ function Copyright() {
 
 export default function App() {
   return (
-    <Container style={{display: "flex", height: "100%"}} maxWidth={false} >
+    <Container style={{display: "flex", height: "100%", background: "#efefef"}} maxWidth={false} >
       <Router/>
     </Container>
   );
