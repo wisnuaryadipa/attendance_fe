@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosResponse<any>> => {
     try {
         const result = await axios.post(option.url!, option.data, option);
-        alert("Input Data Success !");
+        // alert("Input Data Success !");
         return result
     } catch (err) {
         alert(err);

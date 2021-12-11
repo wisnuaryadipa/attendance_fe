@@ -1,4 +1,4 @@
-import react, { HtmlHTMLAttributes, useEffect, useState } from 'react';
+import react, { HtmlHTMLAttributes, useCallback, useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
@@ -13,7 +13,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import EmailIcon from '@mui/icons-material/Email';
 import UnknownPerson from '@src/static/img/UnknownPerson.png';
-import { Calendar, momentLocalizer } from 'react-big-calendar'
+import { Calendar, momentLocalizer, EventPropGetter, stringOrDate } from 'react-big-calendar'
 import moment from 'moment'
 import styled from 'styled-components';
 import { border } from '@mui/system';
@@ -45,42 +45,94 @@ const BasicInformation = (props: HtmlHTMLAttributes<Props>) => {
     const months = moment.months();
     const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
-    
+    const [dateCalendar, setDateCalendar] = useState([] as any)
     const [monthYear, setMonthYear] = useState({month, year} as yearMonth);
-    const [attendData, setAttendData] = useState([]);
+    const [attendData, setAttendData] = useState([] as any[]);
+    const [loading, setLoading] = useState(false);
     const {employeeId} = useParams();
 
 
-    const fetchDataAttends = async () => {
-        const dataSend: any = new URLSearchParams();
-        dataSend.month = monthYear.month;
-        dataSend.year = monthYear.year;
+    const fetchDataAttends = useCallback(async () => {
+        const dataSend = new URLSearchParams();
+        dataSend.append('month', monthYear.month);
+        dataSend.append('year', monthYear.year);
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/attendance/filter/${employeeId}`,
+            url: `http://localhost:3001/api/master/attendance/filter/${employeeId}`,
             data: dataSend
         }
+
         const response = await postAxios(axiosOption);
-        setAttendData(response.data.data)
+        
+        setAttendData(response.data.data as [])
+        // console.log(monthYear)
+        // console.log(response.data.data)
         return response;
-    }
+    },[employeeId, monthYear])
 
 
+    const genCalendarEvent = useCallback(() => {
+        const _arrCalendar:any = [];
+        attendData.map( (item:any) => {
+            let objEvent: any = {}
+            if(item.checkIn || item.checkOut) {
+                if(item.checkIn){
+                    objEvent = {}
+                    objEvent.start = moment(item.checkIn).toDate();
+                    objEvent.end = moment(item.checkIn).add(1, 'hours').toDate();
+                    objEvent.hexColor = "40e0d0";
+                    objEvent.title = "Check In";
+                    _arrCalendar.push(objEvent)
+                }
+                if(item.checkOut) {
+                    objEvent = {}
+                    objEvent.start = moment(item.checkOut).toDate();
+                    objEvent.end = moment(item.checkOut).add(1, 'hours').toDate();
+                    objEvent.hexColor = "f76161";
+                    objEvent.title = "Check Out"
+                    _arrCalendar.push(objEvent)
+                }
+            }
+            return item
+        })
+        setDateCalendar(_arrCalendar)
+    },[attendData])
+    
     useEffect( () => {
-        const month = moment().format("M");
-        const year = moment().format("YYYY");
-        setMonthYear({...monthYear, month: month, year: year});
 
         const runAsync = async () => {
-            const callback = await fetchDataAttends();
-            console.log(callback)
+            await fetchDataAttends()
+            setLoading(true)
         }
-        runAsync();
+
+        if(monthYear){
+            runAsync();
+        }
+
+        console.log("run")
         
-    },[])
+        // if(!attendData){
+        //     const month = moment().format("M");
+        //     const year = moment().format("YYYY");
+        //     setMonthYear({...monthYear, month: month, year: year});
+        //     runAsync();
+        //     console.log('run')
+        // }
+        
+    },[fetchDataAttends, monthYear])
+
+    useEffect(() => {
+        if(loading){
+            genCalendarEvent()
+            setLoading(false)
+        }
+        console.log("run")
+    },[genCalendarEvent, loading])
+
 
     const handleChangeSelect = async (e: SelectChangeEvent<unknown>, name: string) => {
-        console.log(monthYear.month)
+
         await setMonthYear({...monthYear, [name as keyof typeof monthYear]: e.target.value})
+        setLoading(true)
     }
 
     const buildYearsArr = (startYear: number, endYear: number) => {
@@ -91,17 +143,21 @@ const BasicInformation = (props: HtmlHTMLAttributes<Props>) => {
         return years;
     }
 
-    const state = {
-        events: [
-          {
-            start: moment().toDate(),
-            end: moment()
-              .add(1, "days")
-              .toDate(),
-            title: "Some title"
-          }
-        ]
-      };
+    const eventStyle: EventPropGetter<any> = (event: any, start: stringOrDate, end: stringOrDate, isSelected: boolean) => {
+        console.log(event);
+        var backgroundColor = '#' + event.hexColor;
+        var style = {
+            backgroundColor: backgroundColor,
+            borderRadius: '0px',
+            opacity: 0.8,
+            color: 'black',
+            border: '0px',
+            display: 'block'
+        };
+        return {
+            style: style
+        } as React.HTMLAttributes<HTMLDivElement>;
+    }
 
     years = buildYearsArr(2015, parseInt(year));
     return (
@@ -208,13 +264,14 @@ const BasicInformation = (props: HtmlHTMLAttributes<Props>) => {
                 
                 <Calendar
                     localizer={localizer}
-                    events={state.events}
+                    events={dateCalendar}
                     startAccessor="start"
                     endAccessor="end"
                     date={moment().month(parseInt(monthYear.month)-1).year(parseInt(monthYear.year)).toDate()}
                     style={{height: 500, width: "100%", marginTop: "50px" }}
                     views={{month: true}}
                     toolbar={false}
+                    eventPropGetter={eventStyle}
                     />
 
             </ContainerBox>
