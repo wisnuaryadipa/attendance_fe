@@ -9,6 +9,9 @@ import styled from 'styled-components';
 
 import masterRoutes from './masterRoutes';
 import attendanceRoutes from './attendanceRoutes';
+import payrollRoutes from './payrollRoutes';
+
+import PrintPayroll from '@pages/payroll/printPayroll';
 
 
 const ContainerStyled = styled(Container)`
@@ -29,7 +32,14 @@ const Router = () => {
                         const RouteComponent = route.pageComponent as React.ComponentType;
                         return (<Route caseSensitive={true} path={'attendance' + route.path} element={<RouteComponent/>}></Route>)
                     }) }
+                    { payrollRoutes.map((route) => {
+                        const RouteComponent = route.pageComponent as React.ComponentType;
+                        return (<Route caseSensitive={true} path={'payroll' + route.path} element={<RouteComponent/>}></Route>)
+                    }) }
                     
+                </Route>
+                <Route caseSensitive={true} path="/">
+                    <Route path={`payroll/:employeeId/print`} element={<PrintPayroll/>}></Route>
                 </Route>
                 <Route path="*" element={<Pages.Page404/>}> </Route>
             </Routes>
