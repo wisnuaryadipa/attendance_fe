@@ -16,8 +16,10 @@ import { getAxios, postAxios } from '@src/services/axios';
 import IResponse from '@src/interfaces/response/IResponse';
 import styled from 'styled-components';
 import moment from 'moment';
+import { useLocation } from 'react-router';
 
 import PerformanceInformation from './performanceInformation';
+import IEmployee from '@src/interfaces/response/IEmployee';
 
 interface yearMonth {
     month: string;
@@ -35,8 +37,15 @@ const MainDetail = () => {
     const year = moment().format("YYYY");
     const months = moment.months();
     const {employeeId} = useParams();
+    const location = useLocation();
+    const [employeeDetail, setEmployeeDetail] = useState({} as IEmployee);
     const [attendData, setAttendData] = useState([] as any[]);
     const [monthYear, setMonthYear] = useState({month, year} as yearMonth);
+    const [totalWorkingHour, setTotalWorkingHour] = useState(0);
+    const [totalOvertime, setTotalOvertime] = useState(0);
+    const [attendInMonth, setAttendInMonth] = useState(0);
+    const [onTimeInMonth, setOnTimeInMonth] = useState(0);
+    const [overtimeInMonth, setOvertimeInMonth] = useState(0);
 
     
     const fetchDataAttends = useCallback(async () => {
@@ -54,6 +63,14 @@ const MainDetail = () => {
         return response;
     },[employeeId, monthYear])
 
+    const fetchDetailEmployee = useCallback(async () => {
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/master/employee/${employeeId}`,
+        }
+        const response = await getAxios<IResponse<IEmployee>>(axiosOption);
+        return response;
+    },[employeeId])
+
 
     const buildYearsArr = (startYear: number, endYear: number) => {
         const years = []
@@ -69,30 +86,87 @@ const MainDetail = () => {
         // setLoading(true)
     }
 
+    const countTotalWorkingHour = useCallback(() => {
+        let _totalWorkingHour = 0;
+        attendData.forEach((item) => {
+            _totalWorkingHour += (item.workDuration/60);
+        })
+        return _totalWorkingHour;
+    },[attendData])
+
+    const countAttendInMonth = useCallback(() => {
+        let _totaAttendInMonth = 0;
+        attendData.forEach((item) => {
+            if(item.checkIn && item.checkOut){
+                _totaAttendInMonth++;
+            }
+        })
+        return _totaAttendInMonth;
+    },[attendData])
+
+    const countOnTimeInMonth = useCallback(() => {
+        let _totOnTimeInMonth = 0;
+        attendData.forEach((item) => {
+            if(item.checkIn && item.checkOut){
+            }
+        })
+        return _totOnTimeInMonth;
+    },[attendData])
+
+    const countOvertimeInMonth = useCallback(() => {
+        let _totOnTimeInMonth = 0;
+        attendData.forEach((item) => {
+            if(item.checkIn && item.checkOut){
+            }
+        })
+        return _totOnTimeInMonth;
+    },[attendData])
+
+    const checkEmployeeDetail = useCallback( async () => {
+        if (!location.state) {
+            const fetchRes = await fetchDetailEmployee();
+            console.log("data", fetchRes.data.data)
+            return fetchRes.data.data;
+        }
+        return location.state.data;
+    },[fetchDetailEmployee, location])
+
     useEffect(() => {
         const asyncRun = async () => {
             await fetchDataAttends();
+            console.log(await checkEmployeeDetail())
+            setEmployeeDetail(await checkEmployeeDetail())
+            
         }
 
         if(monthYear){
             asyncRun()
         }
-    },[monthYear, fetchDataAttends]);
+    },[monthYear, fetchDataAttends, checkEmployeeDetail]);
 
     useEffect(() => {
         if(attendData){
+            const _totWH = countTotalWorkingHour();
+            const _attendInMonth = countAttendInMonth();
+            const _onTimeInMonth = countOnTimeInMonth();
+            const _overtimeInMonth = countOvertimeInMonth();
 
+            setTotalWorkingHour(_totWH);
+            setAttendInMonth(_attendInMonth);
+            setOnTimeInMonth(_onTimeInMonth);
+            setOvertimeInMonth(_overtimeInMonth);
         }
-    },[attendData])
+    },[attendData, countAttendInMonth, countOnTimeInMonth, countOvertimeInMonth, countTotalWorkingHour])
 
     years = buildYearsArr(2015, parseInt(year));
+
 
     return (
         
         <Grid container rowSpacing={3} >
             <Grid item sm={12}>
 
-                <BasicInformation>
+                <BasicInformation data={employeeDetail} >
 
                 </BasicInformation>
             </Grid>
@@ -138,10 +212,20 @@ const MainDetail = () => {
                     </Box>
 
                     <ContainerBox>
-                        <PerformanceInformation month={monthYear.month} year={monthYear.year} />
-                        
+                        <PerformanceInformation 
+                        month={monthYear.month} 
+                        year={monthYear.year} 
+                        totalWorkingHour={totalWorkingHour} 
+                        totalOvertimeHour={totalOvertime}
+                        attendInMonth={attendInMonth}
+                        onTimeInMonth={onTimeInMonth}
+                        overtimeInMonth={overtimeInMonth}
+                         />
 
-                        <AttendanceCalendar month={monthYear.month} year={monthYear.year} attendanceData={attendData} />
+                        <AttendanceCalendar 
+                        month={monthYear.month} 
+                        year={monthYear.year} 
+                        attendanceData={attendData} />
                     </ContainerBox>
                 </Container>
             </Grid>

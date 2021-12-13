@@ -6,8 +6,14 @@ import moment from 'moment';
 
 
 interface Props {
-    month: string,
-    year: string
+    month: string;
+    year: string;
+    totalWorkingHour: number;
+    totalOvertimeHour: number;
+    attendInMonth: number;
+    onTimeInMonth: number;
+    overtimeInMonth: number;
+
 }
 
 
@@ -21,7 +27,7 @@ const PerformanceInformation = (props: Props) => {
                             Total Working Hour
                         </Typography>
                         <Typography variant='h5' sx={{fontWeight: "700"}}>
-                            350 Hours
+                            {props.totalWorkingHour.toFixed(2)} Hours
                         </Typography>
                     </Box>
 
@@ -32,7 +38,7 @@ const PerformanceInformation = (props: Props) => {
                             Total Overtime Hour
                         </Typography>
                         <Typography variant='h5' sx={{fontWeight: "700"}}>
-                            30 Hours
+                            {props.totalOvertimeHour} Hours
                         </Typography>
                     </Box>
 
@@ -43,7 +49,7 @@ const PerformanceInformation = (props: Props) => {
                             Attend in a Month
                         </Typography>
                         <Typography variant='h5' sx={{fontWeight: "700"}}>
-                            20 / {moment().month(parseInt(props.month)-1).year(parseInt(props.year)).daysInMonth()} Days
+                            {props.attendInMonth} / {moment().month(parseInt(props.month)-1).year(parseInt(props.year)).daysInMonth()} Days
                         </Typography>
                     </Box>
 
@@ -54,7 +60,7 @@ const PerformanceInformation = (props: Props) => {
                             On Time in a Month
                         </Typography>
                         <Typography variant='h5' sx={{fontWeight: "700"}}>
-                            12 / {moment().month(parseInt(props.month)-1).year(parseInt(props.year)).daysInMonth()} Days
+                            {props.onTimeInMonth} / {moment().month(parseInt(props.month)-1).year(parseInt(props.year)).daysInMonth()} Days
                         </Typography>
                     </Box>
 
@@ -65,7 +71,7 @@ const PerformanceInformation = (props: Props) => {
                             Overtime Days in a Month
                         </Typography>
                         <Typography variant='h5' sx={{fontWeight: "700"}}>
-                            5 / {moment().month(parseInt(props.month)-1).year(parseInt(props.year)).daysInMonth()} Days
+                            {props.overtimeInMonth} / {moment().month(parseInt(props.month)-1).year(parseInt(props.year)).daysInMonth()} Days
                         </Typography>
                     </Box>
 

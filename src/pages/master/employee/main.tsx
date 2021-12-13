@@ -117,7 +117,10 @@ export default function MainEmployee() {
                                             <EditIcon sx={{width: '20px !important'}} />
                                         </Button>
                                     </ActionBox>
-                                    <ActionBox to={`/master/employee/${employee.id}`} replace={false} >
+                                    <ActionBox 
+                                    to={{ pathname:`/master/employee/${employee.id}`}} 
+                                    state={{data: employee}} 
+                                    replace={false}>
                                         <Button 
                                         variant='contained' 
                                         color='info' sx={{minWidth: "40px !important", width: "40px"  }} >

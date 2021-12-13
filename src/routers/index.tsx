@@ -21,7 +21,7 @@ const Router = () => {
             <Routes>
                 <Route caseSensitive={true} path="/" element={<Layout/>}> 
                     <Route path="/" element={<MainBar/>} />
-                    { masterRoutes.map((route) => {
+                    { masterRoutes.map((route,) => {
                         const RouteComponent = route.pageComponent as React.ComponentType;
                         return (<Route caseSensitive={true} path={'master' + route.path} element={<RouteComponent/>}></Route>)
                     }) }
