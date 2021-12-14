@@ -1,4 +1,4 @@
-import react from 'react';
+import react, {useEffect, useState} from 'react';
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
@@ -6,6 +6,13 @@ import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import Divider from '@mui/material/Divider';
+import { useSearchParams, useParams } from 'react-router-dom';
+import moment from 'moment'
+
+interface IMonthYear {
+    month: number,
+    year: number,
+}
 
 const GridStyled = styled(Grid)`
     
@@ -15,6 +22,38 @@ const GridStyled = styled(Grid)`
 `
 
 const FormInput = () => {
+
+    
+    const monthNow = moment().format('M');
+    const yearNow = moment().format("YYYY");
+    const initMonthYear = {
+        month: parseInt(monthNow), 
+        year: parseInt(yearNow)
+    } as IMonthYear
+    
+    const [monthYear, setMonthYear] = useState(initMonthYear);
+    const [searchParams, setSearchParam] = useSearchParams();
+    const {employeeId} = useParams();
+
+    
+
+    const fetchPayrollData = (month: number, year: number, employeeId: number) => {
+
+        console.log()
+
+    }
+
+    console.log(monthYear)
+
+
+    useEffect(() => {
+
+        searchParams.forEach((item, key) => {
+            setMonthYear({...monthYear, [key]: item});
+        })
+        // console.log(month)
+    },[])
+
     return (
         <Box>
             <Box sx={{marginBottom: "30px"}}>

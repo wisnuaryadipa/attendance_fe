@@ -1,11 +1,21 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
+import moment from 'moment';
+import qs from 'qs'
+import {useSearchParams} from 'react-router-dom'
+
+interface IMonthYear {
+    month: number,
+    year: number,
+}
+
+type Props = {
+    location: Location
+}
 
 const PrintArea = styled(Box)`
-
-
     padding: 10px 20px;
     position: absolute;
     left: 0;
@@ -29,10 +39,29 @@ const PrintArea = styled(Box)`
     td, th {
         padding: 2px 0px;
     }
-
 `
 
 const PrintLayoutPayroll = () => {
+    const monthNow = moment().format('M');
+    const yearNow = moment().format("YYYY");
+    const initMonthYear = {
+        month: parseInt(monthNow), 
+        year: parseInt(yearNow)
+    } as IMonthYear
+    
+    const [monthYear, setMonthYear] = useState(initMonthYear);
+    const [searchParams, setSearchParam] = useSearchParams();
+    const month = searchParams.get('month') || "";
+
+    useEffect(() => {
+
+        console.log("month")
+    },[])
+
+
+
+
+
     return (
 
         <PrintArea>
