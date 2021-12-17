@@ -23,7 +23,7 @@ const SelectComponent = (props: Props) => {
           id="demo-simple-select-standard" {...props}>
                 {
                     datas.map((data) => (
-                        <MenuItem value={data.id} >{capitalize(data.name)}</MenuItem>
+                        <MenuItem key={data.id} value={data.id} >{capitalize(data.name)}</MenuItem>
                     ))
                 }
             </Select>

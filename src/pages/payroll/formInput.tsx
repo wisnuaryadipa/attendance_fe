@@ -1,17 +1,24 @@
-import react, {useEffect, useState} from 'react';
+import react, {useEffect, useState, useRef} from 'react';
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
+import Select from '@src/components/Select/Select';
 import FormControl from '@mui/material/FormControl';
 import Divider from '@mui/material/Divider';
 import { useSearchParams, useParams } from 'react-router-dom';
 import moment from 'moment'
+import { SelectChangeEvent } from '@mui/material/Select';
+import { IPayroll } from '@src/interfaces/response/IPayroll';
 
 interface IMonthYear {
     month: number,
     year: number,
+}
+
+interface Props extends HTMLDivElement{
+    inputData: any
 }
 
 const GridStyled = styled(Grid)`
@@ -21,7 +28,8 @@ const GridStyled = styled(Grid)`
 
 `
 
-const FormInput = () => {
+const FormInput = (props: any) => {
+    const selectSalaryType = [{id:true,name:"Gaji Bulanan Flat"}, {id: false, name: "Gaji Harian"}];
 
     
     const monthNow = moment().format('M');
@@ -30,14 +38,16 @@ const FormInput = () => {
         month: parseInt(monthNow), 
         year: parseInt(yearNow)
     } as IMonthYear
-    
+    const [selectedSalayType, SetSelectedSalaryType] = useState(1);
     const [monthYear, setMonthYear] = useState(initMonthYear);
+    const [data, setData] = useState({} as Partial<IPayroll>);
     const [searchParams, setSearchParam] = useSearchParams();
     const {employeeId} = useParams();
+    const refData = useRef({} as any);
 
     
 
-    const fetchPayrollData = (month: number, year: number, employeeId: number) => {
+    const fetchPayrollData = async (month: number, year: number, employeeId: number) => {
 
         console.log()
 
@@ -54,6 +64,20 @@ const FormInput = () => {
         // console.log(month)
     },[])
 
+    const handleChangeSelect = async (e: SelectChangeEvent<unknown>, name: string) => {
+        await setData({...data, [name as keyof typeof data]: e.target.value})
+        refData.current = {...data, [name as keyof typeof data]: e.target.value};
+        props.inputData(refData.current)
+    }
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
+        setData({...data, [name as keyof typeof data]: event.target.value})
+        refData.current = {...data, [name as keyof typeof data]: event.target.value};
+        props.inputData(refData.current)
+
+
+    };
+
     return (
         <Box>
             <Box sx={{marginBottom: "30px"}}>
@@ -66,12 +90,28 @@ const FormInput = () => {
                     <TextField 
                         fullWidth
                         required
-                        id="monthlyPayment"
-                        key="monthlyPayment"
+                        id="monthlySalary"
+                        key="monthlySalary"
                         label="Gaji Bulanan"
                         helperText="Gaji Bulanan Flat (Rp)"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "monthlySalary")} }
+                        defaultValue={data.monthlySalary}
+                        value={data.monthlySalary}
                         />
+                </Grid>
+                <Grid item lg={3} sm={6}>
+                    <Select
+                        required
+                        id="selectSalaryType"
+                        key="selectSalaryType"
+                        label="Tipe Penggajian"
+                        onChange={(e)=>{handleChangeSelect(e, "selectedSalaryType")} }
+                        className="text-input"
+                        defaultValue={false}
+                        value={data.selectedSalaryType}
+                        dataList={selectSalaryType}
+                        /> 
                 </Grid>
             </GridStyled>
             <GridStyled container spacing={2} rowSpacing={3}>
@@ -80,22 +120,28 @@ const FormInput = () => {
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="totalDayAttended"
+                        key="totalDayAttended"
                         label="Jumlah Kedatangan (Hari)"
                         helperText="Jumlah Hari Kedatangan"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "totalDayAttended")} }
+                        defaultValue={data.totalDayAttended}
+                        value={data.totalDayAttended}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="dailySalary"
+                        key="dailySalary"
                         label="Gaji per hari"
                         helperText="Total Gaji per Hari (Rp)"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "dailySalary")} }
+                        defaultValue={data.dailySalary}
+                        value={data.dailySalary}
                         />
                 </Grid>
             </GridStyled>
@@ -107,11 +153,14 @@ const FormInput = () => {
                         <TextField 
                             fullWidth
                             required
-                            id="weeklyPayment"
-                            key="weeklyPayment"
+                            id="totalOvertimeHour"
+                            key="totalOvertimeHour"
                             label="Jumlah Overtime (Jam)"
                             helperText="Jumlah Jam Overtime"
                             className="text-input"
+                            onChange={(e)=>{handleChange(e, "totalOvertimeHour")} }
+                            defaultValue={data.totalOvertimeHour}
+                            value={data.totalOvertimeHour}
                             />
                     </FormControl>
                 </Grid>
@@ -119,11 +168,14 @@ const FormInput = () => {
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="hourlyOvertimeSalary"
+                        key="hourlyOvertimeSalary"
                         label="Gaji Overtime per Jam"
                         helperText="Gaji Overtime Setiap Jam (Rp)"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "hourlyOvertimeSalary")} }
+                        defaultValue={data.hourlyOvertimeSalary}
+                        value={data.hourlyOvertimeSalary}
                         />
                 </Grid>
             </GridStyled>
@@ -134,30 +186,39 @@ const FormInput = () => {
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="tunjangan"
+                        key="tunjangan"
                         label="Tunjangan"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "tunjangan")} }
+                        defaultValue={data.tunjangan}
+                        value={data.tunjangan}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="fasilitasBpjs"
+                        key="fasilitasBpjs"
                         label="Fasilitas BPJS"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "fasilitasBpjs")} }
+                        defaultValue={data.fasilitasBpjs}
+                        value={data.fasilitasBpjs}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="incomeLainLain"
+                        key="incomeLainLain"
                         label="Lain-Lain"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "incomeLainLain")} }
+                        defaultValue={data.incomeLainLain}
+                        value={data.incomeLainLain}
                         />
                 </Grid>
             </GridStyled>
@@ -176,33 +237,47 @@ const FormInput = () => {
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="outcomeBpjstk"
+                        key="outcomeBpjstk"
                         label="Iuran BPJS TK/JHT/PENSIUN"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "outcomeBpjstk")} }
+                        defaultValue={data.outcomeBpjstk}
+                        value={data.outcomeBpjstk}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="outcomeDebt"
+                        key="outcomeDebt"
                         label="Pinjaman"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "outcomeDebt")} }
+                        defaultValue={data.outcomeDebt}
+                        value={data.outcomeDebt}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
                     <TextField 
                         fullWidth
                         required
-                        id="weeklyPayment"
-                        key="weeklyPayment"
+                        id="outcomeLainLain"
+                        key="outcomeLainLain"
                         label="Lain-Lain"
                         className="text-input"
+                        onChange={(e)=>{handleChange(e, "outcomeLainLain")} }
+                        defaultValue={data.outcomeLainLain}
+                        value={data.outcomeLainLain}
                         />
                 </Grid>
             </GridStyled>
+            <Box sx={{marginTop: "30px"}}>
+                <Typography variant='h6'>
+                    GAJI & FASILITAS
+                </Typography>
+            </Box>
         </Box>
     )
 }
