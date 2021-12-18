@@ -3,7 +3,6 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosResponse<any>> => {
     try {
         const result = await axios.post(option.url!, option.data, option);
-        // alert("Input Data Success !");
         return result
     } catch (err) {
         alert(err);
@@ -17,8 +16,21 @@ export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosRespon
 }
 
 export const getAxios = async <T>(option: AxiosRequestConfig) => {
-    const data = await axios.get(option.url!, option).catch(err => { alert(err) }) as AxiosResponse<T>;
-    return data;
+    
+    try {
+
+        const data = await axios.get(option.url!, option).catch(err => { alert(err) }) as AxiosResponse<T>;
+        return data;
+        
+    } catch (err) {
+        alert(err);
+        if (axios.isAxiosError(err)){
+            const result = err.response!
+            return result;
+        } else {
+            throw err;
+        }
+    }
 }
 
 export const putAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResponse<T>> => {

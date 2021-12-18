@@ -11,6 +11,9 @@ import { useSearchParams, useParams } from 'react-router-dom';
 import moment from 'moment'
 import { SelectChangeEvent } from '@mui/material/Select';
 import { IPayroll } from '@src/interfaces/response/IPayroll';
+import { getAxios } from '@src/services/axios';
+import { AxiosRequestConfig } from 'axios';
+import qs from 'qs';
 
 interface IMonthYear {
     month: number,
@@ -49,7 +52,15 @@ const FormInput = (props: any) => {
 
     const fetchPayrollData = async (month: number, year: number, employeeId: number) => {
 
-        console.log()
+        const queryString = qs.stringify({month: month, year: year}, { indices: false });
+        console.log(queryString)
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/payroll/${employeeId}?${queryString}`,
+            method: "GET",
+        }
+        const result = await getAxios(axiosOption)
+        console.log(result)
+        return result;
 
     }
 
@@ -58,9 +69,19 @@ const FormInput = (props: any) => {
 
     useEffect(() => {
 
+        const loadSync = async () => {
+            await fetchPayrollData(
+                monthYear.month,
+                monthYear.year,
+                parseInt(employeeId!)
+            )
+        }
+
         searchParams.forEach((item, key) => {
             setMonthYear({...monthYear, [key]: item});
         })
+
+        loadSync();
         // console.log(month)
     },[])
 
@@ -80,6 +101,15 @@ const FormInput = (props: any) => {
 
     return (
         <Box>
+            <Box>
+                <GridStyled container spacing={2} rowSpacing={3} >
+                    <Grid item lg={3} sm={6}>
+
+                    </Grid>
+                </GridStyled>
+            </Box>
+
+            <Divider />
             <Box sx={{marginBottom: "30px"}}>
                 <Typography variant='h6'>
                     GAJI & FASILITAS
@@ -273,11 +303,6 @@ const FormInput = (props: any) => {
                         />
                 </Grid>
             </GridStyled>
-            <Box sx={{marginTop: "30px"}}>
-                <Typography variant='h6'>
-                    GAJI & FASILITAS
-                </Typography>
-            </Box>
         </Box>
     )
 }

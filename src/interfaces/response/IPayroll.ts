@@ -3,7 +3,6 @@ import { Nullable } from "@src/types/common";
 
 export interface IBasePayroll {
 
-    id: string;
     employeeId: number;
     month: number;
     year: number;
@@ -24,5 +23,6 @@ export interface IBasePayroll {
 }
 
 export interface IPayroll extends IBasePayroll {
+    id: string;
     readonly employee?: IEmployee;
 }
