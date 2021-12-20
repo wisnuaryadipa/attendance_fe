@@ -43,7 +43,7 @@ const PositionEdit = () => {
     };
 
     const handleChangeSelect = async (e: SelectChangeEvent<unknown>, name: string) => {
-        await setData({...data, [name as keyof typeof data]: e.target.value})
+        setData({...data, [name as keyof typeof data]: e.target.value})
     }
     
     const fetchDivisions = async () => {
@@ -121,15 +121,15 @@ const PositionEdit = () => {
             <Grid container spacing={2}>  
                     <Grid item xs={12} lg={6} sm={12}>
                             <TextField
-                            fullWidth
-                            required
-                            id="name"
-                            key="name"
-                            label="Position Name"
-                            onChange={(e)=>{handleChange(e, "name")} }
-                            className="text-input"
-                            defaultValue={data.name}
-                            value={data.name}
+                                fullWidth
+                                required
+                                id="name"
+                                key="name"
+                                label="Position Name"
+                                onChange={(e)=>{handleChange(e, "name")} }
+                                className="text-input"
+                                defaultValue={data.name}
+                                value={data.name}
                             />
                     </Grid>
                     <Grid item xs={12} lg={6} sm={12}>
@@ -153,7 +153,7 @@ const PositionEdit = () => {
                             id="basicSalary"
                             key="basicSalary"
                             label="Basic Salary"
-                            onChange={(e)=>{handleChange(e, "basicSalary")} }
+                            onChange={(e)=>{ handleChange(e, "basicSalary") } }
                             className="text-input"
                             defaultValue={data.basicSalary}
                             value={data.basicSalary}
@@ -166,7 +166,7 @@ const PositionEdit = () => {
                             id="wagePerHour"
                             key="wagePerHour"
                             label="Wage Per Hour"
-                            onChange={(e)=>{handleChange(e, "wagePerHour")} }
+                            onChange={(e)=>{ handleChange(e, "wagePerHour") }}
                             className="text-input"
                             defaultValue={data.wagePerHour}
                             value={data.wagePerHour}

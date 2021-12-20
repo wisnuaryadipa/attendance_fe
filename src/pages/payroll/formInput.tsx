@@ -6,14 +6,19 @@ import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import Select from '@src/components/Select/Select';
 import FormControl from '@mui/material/FormControl';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 import Divider from '@mui/material/Divider';
 import { useSearchParams, useParams } from 'react-router-dom';
 import moment from 'moment'
+import NotFoundPage from '@pages/404'
 import { SelectChangeEvent } from '@mui/material/Select';
 import { IPayroll } from '@src/interfaces/response/IPayroll';
 import { getAxios } from '@src/services/axios';
 import { AxiosRequestConfig } from 'axios';
 import qs from 'qs';
+import IResponse from '@src/interfaces/response/IResponse';
+import IEmployee from 'src/interfaces/response/IEmployee';
 
 interface IMonthYear {
     month: number,
@@ -25,10 +30,7 @@ interface Props extends HTMLDivElement{
 }
 
 const GridStyled = styled(Grid)`
-    
     padding-bottom: 30px;
-
-
 `
 
 const FormInput = (props: any) => {
@@ -41,53 +43,58 @@ const FormInput = (props: any) => {
         month: parseInt(monthNow), 
         year: parseInt(yearNow)
     } as IMonthYear
+    const [isPositionIdExist, setIsPositionIdExist] = useState(true);
     const [selectedSalayType, SetSelectedSalaryType] = useState(1);
     const [monthYear, setMonthYear] = useState(initMonthYear);
     const [data, setData] = useState({} as Partial<IPayroll>);
+    const [employee, setEmployee] = useState({} as Partial<IEmployee>);
     const [searchParams, setSearchParam] = useSearchParams();
     const {employeeId} = useParams();
     const refData = useRef({} as any);
+    const [loading, setLoading] = useState(true);
 
     
 
     const fetchPayrollData = async (month: number, year: number, employeeId: number) => {
-
         const queryString = qs.stringify({month: month, year: year}, { indices: false });
-        console.log(queryString)
         const axiosOption: AxiosRequestConfig = {
             url: `http://localhost:3001/api/payroll/${employeeId}?${queryString}`,
             method: "GET",
         }
-        const result = await getAxios(axiosOption)
-        console.log(result)
+        const result = await getAxios<IResponse<IEmployee>>(axiosOption)
         return result;
-
     }
-
-    console.log(monthYear)
 
 
     useEffect(() => {
 
         const loadSync = async () => {
-            await fetchPayrollData(
-                monthYear.month,
-                monthYear.year,
-                parseInt(employeeId!)
-            )
+
+                const _payrollData = await fetchPayrollData(
+                    monthYear.month,
+                    monthYear.year,
+                    parseInt(employeeId!)
+                )
+                if(_payrollData && _payrollData.status === 201 ) {
+                    setData(_payrollData.data.data.payrolls[0]);
+                    setEmployee(_payrollData.data.data)
+                    if (!_payrollData.data.data){ setIsPositionIdExist(false) }
+                }
+                searchParams.forEach((item, key) => {
+                    setMonthYear({...monthYear, [key]: item});
+                })
+                setLoading(false)
+                console.log(_payrollData)
         }
 
-        searchParams.forEach((item, key) => {
-            setMonthYear({...monthYear, [key]: item});
-        })
-
-        loadSync();
-        // console.log(month)
+        if(loading === true){
+            loadSync();
+        }
     },[])
 
-    const handleChangeSelect = async (e: SelectChangeEvent<unknown>, name: string) => {
-        await setData({...data, [name as keyof typeof data]: e.target.value})
-        refData.current = {...data, [name as keyof typeof data]: e.target.value};
+    const handleChangeSelect = async (event: SelectChangeEvent<unknown>, name: string) => {
+        setData({...data, [name as keyof typeof data]: event.target.value})
+        refData.current = {...data, [name as keyof typeof data]: event.target.value};
         props.inputData(refData.current)
     }
 
@@ -95,16 +102,35 @@ const FormInput = (props: any) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
         refData.current = {...data, [name as keyof typeof data]: event.target.value};
         props.inputData(refData.current)
-
-
     };
 
+
+    if (!isPositionIdExist){ return (<NotFoundPage/>)}
     return (
         <Box>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <Box>
                 <GridStyled container spacing={2} rowSpacing={3} >
                     <Grid item lg={3} sm={6}>
-
+                        <Typography variant='body2'>Nama</Typography>
+                        <Typography>{employee.name ?? `(Kosong)`}</Typography>
+                    </Grid>
+                    <Grid item lg={3} sm={6}>
+                        <Typography variant='body2'>Email</Typography>
+                        <Typography>{employee.email ?? `(Kosong)`}</Typography>
+                    </Grid>
+                    <Grid item lg={3} sm={6}>
+                        <Typography variant='body2'>Jenis Kelamin</Typography>
+                        <Typography>{employee.gender ?? `(Kosong)`}</Typography>
+                    </Grid>
+                    <Grid item lg={3} sm={6}>
+                        <Typography variant='body2'>Nomor Mesin Absen</Typography>
+                        <Typography>{employee.machineId ?? `(Kosong)`}</Typography>
                     </Grid>
                 </GridStyled>
             </Box>
@@ -125,9 +151,9 @@ const FormInput = (props: any) => {
                         label="Gaji Bulanan"
                         helperText="Gaji Bulanan Flat (Rp)"
                         className="text-input"
-                        onChange={(e)=>{handleChange(e, "monthlySalary")} }
-                        defaultValue={data.monthlySalary}
-                        value={data.monthlySalary}
+                        onChange={ (e)=>{handleChange(e, "monthlySalary")} }
+                        defaultValue={data.monthlySalary ?? ""}
+                        value={data.monthlySalary ?? ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -136,10 +162,10 @@ const FormInput = (props: any) => {
                         id="selectSalaryType"
                         key="selectSalaryType"
                         label="Tipe Penggajian"
-                        onChange={(e)=>{handleChangeSelect(e, "selectedSalaryType")} }
+                        onChange={ (e)=>{handleChangeSelect(e, "selectedSalaryType")} }
                         className="text-input"
-                        defaultValue={false}
-                        value={data.selectedSalaryType}
+                        defaultValue={data.selectedSalaryType ?? ""}
+                        value={data.selectedSalaryType ?? ""}
                         dataList={selectSalaryType}
                         /> 
                 </Grid>
@@ -156,8 +182,8 @@ const FormInput = (props: any) => {
                         helperText="Jumlah Hari Kedatangan"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "totalDayAttended")} }
-                        defaultValue={data.totalDayAttended}
-                        value={data.totalDayAttended}
+                        defaultValue={data.totalDayAttended ?? ""}
+                        value={data.totalDayAttended ?? ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -170,8 +196,8 @@ const FormInput = (props: any) => {
                         helperText="Total Gaji per Hari (Rp)"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "dailySalary")} }
-                        defaultValue={data.dailySalary}
-                        value={data.dailySalary}
+                        defaultValue={data.dailySalary ?? ""}
+                        value={data.dailySalary ?? ""}
                         />
                 </Grid>
             </GridStyled>
@@ -189,8 +215,8 @@ const FormInput = (props: any) => {
                             helperText="Jumlah Jam Overtime"
                             className="text-input"
                             onChange={(e)=>{handleChange(e, "totalOvertimeHour")} }
-                            defaultValue={data.totalOvertimeHour}
-                            value={data.totalOvertimeHour}
+                            defaultValue={data.totalOvertimeHour ?? ""}
+                            value={data.totalOvertimeHour ?? ""}
                             />
                     </FormControl>
                 </Grid>
@@ -204,8 +230,8 @@ const FormInput = (props: any) => {
                         helperText="Gaji Overtime Setiap Jam (Rp)"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "hourlyOvertimeSalary")} }
-                        defaultValue={data.hourlyOvertimeSalary}
-                        value={data.hourlyOvertimeSalary}
+                        defaultValue={data.hourlyOvertimeSalary ?? ""}
+                        value={data.hourlyOvertimeSalary ?? ""}
                         />
                 </Grid>
             </GridStyled>
@@ -221,8 +247,8 @@ const FormInput = (props: any) => {
                         label="Tunjangan"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "tunjangan")} }
-                        defaultValue={data.tunjangan}
-                        value={data.tunjangan}
+                        defaultValue={data.tunjangan ?? ""}
+                        value={data.tunjangan ?? ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -234,8 +260,8 @@ const FormInput = (props: any) => {
                         label="Fasilitas BPJS"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "fasilitasBpjs")} }
-                        defaultValue={data.fasilitasBpjs}
-                        value={data.fasilitasBpjs}
+                        defaultValue={data.fasilitasBpjs ?? ""}
+                        value={data.fasilitasBpjs ?? ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -247,8 +273,8 @@ const FormInput = (props: any) => {
                         label="Lain-Lain"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "incomeLainLain")} }
-                        defaultValue={data.incomeLainLain}
-                        value={data.incomeLainLain}
+                        defaultValue={data.incomeLainLain ?? ""}
+                        value={data.incomeLainLain ?? ""}
                         />
                 </Grid>
             </GridStyled>
@@ -272,8 +298,8 @@ const FormInput = (props: any) => {
                         label="Iuran BPJS TK/JHT/PENSIUN"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "outcomeBpjstk")} }
-                        defaultValue={data.outcomeBpjstk}
-                        value={data.outcomeBpjstk}
+                        defaultValue={data.outcomeBpjstk ?? ""}
+                        value={data.outcomeBpjstk ?? ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -285,8 +311,8 @@ const FormInput = (props: any) => {
                         label="Pinjaman"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "outcomeDebt")} }
-                        defaultValue={data.outcomeDebt}
-                        value={data.outcomeDebt}
+                        defaultValue={data.outcomeDebt ?? ""}
+                        value={data.outcomeDebt ?? ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -298,8 +324,8 @@ const FormInput = (props: any) => {
                         label="Lain-Lain"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "outcomeLainLain")} }
-                        defaultValue={data.outcomeLainLain}
-                        value={data.outcomeLainLain}
+                        defaultValue={data.outcomeLainLain ?? ""}
+                        value={data.outcomeLainLain ?? ""}
                         />
                 </Grid>
             </GridStyled>

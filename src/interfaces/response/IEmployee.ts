@@ -1,3 +1,4 @@
+import { IPayroll } from './IPayroll';
 import IPosition from "./IPosition";
 export interface IBaseEmployee {
     name: string;
@@ -19,6 +20,7 @@ export interface IBaseEmployee {
     description?:string;
     flatSalary?: number;
     activeFlatSalary?: boolean;
+    payrolls: IPayroll[]
 }
 
 export default interface IEmployee extends IBaseEmployee {

@@ -15,7 +15,7 @@ export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosRespon
     }
 }
 
-export const getAxios = async <T>(option: AxiosRequestConfig) => {
+export const getAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
     
     try {
 
