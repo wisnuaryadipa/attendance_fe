@@ -88,10 +88,10 @@ export default function MainPosition() {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                        <TableCell>No.</TableCell>
-                        <TableCell align="left">Name</TableCell>
-                        <TableCell align="center">Division</TableCell>
-                        <TableCell align="center">Action</TableCell>
+                            <TableCell>No.</TableCell>
+                            <TableCell align="left">Name</TableCell>
+                            <TableCell align="center">Division</TableCell>
+                            <TableCell align="center">Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

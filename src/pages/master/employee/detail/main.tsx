@@ -21,7 +21,7 @@ import { useLocation } from 'react-router';
 import PerformanceInformation from './performanceInformation';
 import IEmployee from '@src/interfaces/response/IEmployee';
 
-interface yearMonth {
+interface monthYear {
     month: string;
     year: string;
 }
@@ -40,7 +40,7 @@ const MainDetail = () => {
     const location = useLocation();
     const [employeeDetail, setEmployeeDetail] = useState({} as IEmployee);
     const [attendData, setAttendData] = useState([] as any[]);
-    const [monthYear, setMonthYear] = useState({month, year} as yearMonth);
+    const [monthYear, setMonthYear] = useState({month, year} as monthYear);
     const [totalWorkingHour, setTotalWorkingHour] = useState(0);
     const [totalOvertime, setTotalOvertime] = useState(0);
     const [attendInMonth, setAttendInMonth] = useState(0);

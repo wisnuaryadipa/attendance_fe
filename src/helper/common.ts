@@ -5,3 +5,11 @@ export const capitalize = (text: string) => {
     .join(' ');
     
 }
+
+export const buildArrRangeNumber = (startNumber: number, finishNumber: number) => {
+    const arrNumber: number[] = [];
+    for (let index = startNumber; index <= finishNumber; index++) {
+        arrNumber.push(index)
+    }
+    return arrNumber;
+}
