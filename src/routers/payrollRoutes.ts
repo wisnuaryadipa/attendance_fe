@@ -3,9 +3,14 @@ import IRoute, {IRoutes} from '@interfaces/IRoute';
 import Payroll from '@pages/payroll/index'
 
 const masterRoutes: IRoutes = [
+
+    {
+        path: "/",
+        pageComponent: Payroll.main
+    },
     {
         path: "/:employeeId/form",
-        pageComponent: Payroll.MainPayroll
+        pageComponent: Payroll.input
     },
 ]
 
