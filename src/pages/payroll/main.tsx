@@ -1,4 +1,4 @@
-import react, {useState, useRef} from 'react';
+import react, {useState, useRef, useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -8,11 +8,12 @@ import {getAxios, postAxios, putAxios} from '@services/axios'
 import { IBasePayroll, IPayroll } from '@src/interfaces/response/IPayroll';
 import {useParams} from 'react-router-dom';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import {useSearchParams} from 'react-router-dom';
 import moment from 'moment';
 import IResponse from '@src/interfaces/response/IResponse';
 import IEmployee from '@src/interfaces/response/IEmployee';
 import qs from 'qs';
-import {monthId} from '@src/static/common';
+import {monthIDN} from '@src/static/common';
 
 interface IMonthYear {
     month: number,
@@ -29,8 +30,10 @@ const Payroll = () => {
     } as IMonthYear
     const [monthYear, setMonthYear] = useState(initMonthYear);
     const refInputData = useRef({} as Partial<IPayroll>);
+    const refQueryRoute = useRef({} as any); 
     const {employeeId} = useParams();
     const refLoading = useRef(false);
+    const [searchParams, setSearchParam] = useSearchParams();
 
     const updateInputData = (val:any) => {
         refInputData.current = val;
@@ -121,6 +124,13 @@ const Payroll = () => {
         return result;
     }
 
+    useEffect(() => {
+        searchParams.forEach((item, key) => {
+            setMonthYear({...monthYear, [key]: item});
+            refQueryRoute.current = {...refQueryRoute.current, [key]: item}
+        })
+        setMonthYear({month: refQueryRoute.current.month, year: refQueryRoute.current.year});
+    },[])
 
     return (
         <Panel>
@@ -129,7 +139,7 @@ const Payroll = () => {
                     <Typography variant='h5'>Form Print Payroll</Typography>
                 </Box>
                 <Box>
-                    <Typography variant='h5'>{monthId[monthYear.month-1].toUpperCase()} / {monthYear.year}</Typography>
+                    <Typography variant='h5'>{monthIDN[monthYear.month-1].toUpperCase()} / {monthYear.year}</Typography>
                 </Box>
             </PanelHeader>
             <PanelBody>

@@ -19,8 +19,9 @@ const SelectComponent = (props: Props) => {
         <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">{capitalize(label)}</InputLabel>
             <Select 
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard" {...props}>
+                defaultValue={props.defaultValue}
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard" {...props}>
                 {
                     datas.map((data) => (
                         <MenuItem key={data.id} value={data.id} >{capitalize(data.name)}</MenuItem>

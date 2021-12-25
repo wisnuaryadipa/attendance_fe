@@ -18,7 +18,9 @@ import { getAxios } from '@src/services/axios';
 import { AxiosRequestConfig } from 'axios';
 import qs from 'qs';
 import IResponse from '@src/interfaces/response/IResponse';
-import IEmployee from 'src/interfaces/response/IEmployee';
+import IEmployee from '@src/interfaces/response/IEmployee';
+import { MonthYear } from '@src/types/common';
+import {monthIDN} from '@src/static/common';
 
 interface IMonthYear {
     month: number,
@@ -51,11 +53,12 @@ const FormInput = (props: any) => {
     const [searchParams, setSearchParam] = useSearchParams();
     const {employeeId} = useParams();
     const refData = useRef({} as any);
+    const refMonthYear = useRef({} as MonthYear)
     const [loading, setLoading] = useState(true);
 
     
 
-    const fetchPayrollData = async (month: number, year: number, employeeId: number) => {
+    const fetchEmployeeData = async (month: number, year: number, employeeId: number) => {
         const queryString = qs.stringify({month: month, year: year}, { indices: false });
         const axiosOption: AxiosRequestConfig = {
             url: `http://localhost:3001/api/payroll/${employeeId}?${queryString}`,
@@ -65,30 +68,55 @@ const FormInput = (props: any) => {
         return result;
     }
 
+    const fetchPayrollData = async (month: number, year: number, employeeId: number) => {
+        const queryString = qs.stringify({month: month, year: year}, { indices: false });
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/payroll/last-input/${employeeId}?${queryString}`,
+            method: "GET",
+        }
+        const result = await getAxios<IResponse<IPayroll>>(axiosOption)
+        return result;
+    }
+
 
     useEffect(() => {
 
         const loadSync = async () => {
 
-                const _payrollData = await fetchPayrollData(
-                    monthYear.month,
-                    monthYear.year,
-                    parseInt(employeeId!)
-                )
-                if(_payrollData && _payrollData.status === 201 ) {
-                    setData(_payrollData.data.data.payrolls[0]);
-                    setEmployee(_payrollData.data.data)
-                    if (!_payrollData.data.data){ setIsPositionIdExist(false) }
-                }
                 searchParams.forEach((item, key) => {
                     setMonthYear({...monthYear, [key]: item});
+                    refMonthYear.current = {...refMonthYear.current, [key]: item}
                 })
+
+                const _employeeData = await fetchEmployeeData(
+                    refMonthYear.current.month,
+                    refMonthYear.current.year,
+                    parseInt(employeeId!)
+                )
+
+                if (_employeeData && _employeeData.status === 201 ) {
+                    
+                    setEmployee(_employeeData.data.data)
+                    if (!_employeeData.data.data){ setIsPositionIdExist(false) }
+                    if(_employeeData.data.data.payrolls[0]) {
+                        setData(_employeeData.data.data.payrolls[0]);
+                    } else {
+                        const _payrollData = await fetchPayrollData(
+                            refMonthYear.current.month,
+                            refMonthYear.current.year,
+                            parseInt(employeeId!)
+                        )
+                        setData(_payrollData.data.data);
+                    }
+
+                }
+
                 setLoading(false)
-                console.log(_payrollData)
         }
 
         if(loading === true){
             loadSync();
+            
         }
     },[])
 
@@ -136,10 +164,15 @@ const FormInput = (props: any) => {
             </Box>
 
             <Divider />
-            <Box sx={{marginBottom: "30px"}}>
+            <Box sx={{marginBottom: "30px", display: 'flex', flexDirection: "row", justifyContent: "space-between"}}>
                 <Typography variant='h6'>
-                    GAJI & FASILITAS
+                    GAJI & FASILITAS 
                 </Typography>
+                <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                    <Typography variant='body2' sx={{color: "red"}}>
+                        Last Input Reference : {monthIDN[data.month!-1]}/{data.year}
+                    </Typography>
+                </Box>
             </Box>
             <GridStyled container spacing={2} rowSpacing={3}>
                 <Grid item lg={3} sm={6}>
@@ -152,8 +185,8 @@ const FormInput = (props: any) => {
                         helperText="Gaji Bulanan Flat (Rp)"
                         className="text-input"
                         onChange={ (e)=>{handleChange(e, "monthlySalary")} }
-                        defaultValue={data.monthlySalary ?? ""}
-                        value={data.monthlySalary ?? ""}
+                        defaultValue= ""
+                        value={ data && data.monthlySalary ? data.monthlySalary : "" }
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -164,8 +197,8 @@ const FormInput = (props: any) => {
                         label="Tipe Penggajian"
                         onChange={ (e)=>{handleChangeSelect(e, "selectedSalaryType")} }
                         className="text-input"
-                        defaultValue={data.selectedSalaryType ?? ""}
-                        value={data.selectedSalaryType ?? ""}
+                        defaultValue="true"
+                        value={ data && data.selectedSalaryType ? data.selectedSalaryType : ""}
                         dataList={selectSalaryType}
                         /> 
                 </Grid>
@@ -182,8 +215,8 @@ const FormInput = (props: any) => {
                         helperText="Jumlah Hari Kedatangan"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "totalDayAttended")} }
-                        defaultValue={data.totalDayAttended ?? ""}
-                        value={data.totalDayAttended ?? ""}
+                        defaultValue= ""
+                        value={ data && data.totalDayAttended ? data.totalDayAttended : ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -196,8 +229,8 @@ const FormInput = (props: any) => {
                         helperText="Total Gaji per Hari (Rp)"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "dailySalary")} }
-                        defaultValue={data.dailySalary ?? ""}
-                        value={data.dailySalary ?? ""}
+                        defaultValue= ""
+                        value={ data && data.dailySalary ? data.dailySalary : ""}
                         />
                 </Grid>
             </GridStyled>
@@ -215,8 +248,8 @@ const FormInput = (props: any) => {
                             helperText="Jumlah Jam Overtime"
                             className="text-input"
                             onChange={(e)=>{handleChange(e, "totalOvertimeHour")} }
-                            defaultValue={data.totalOvertimeHour ?? ""}
-                            value={data.totalOvertimeHour ?? ""}
+                            defaultValue= ""
+                            value={ data && data.totalOvertimeHour ? data.totalOvertimeHour : ""}
                             />
                     </FormControl>
                 </Grid>
@@ -230,8 +263,8 @@ const FormInput = (props: any) => {
                         helperText="Gaji Overtime Setiap Jam (Rp)"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "hourlyOvertimeSalary")} }
-                        defaultValue={data.hourlyOvertimeSalary ?? ""}
-                        value={data.hourlyOvertimeSalary ?? ""}
+                        defaultValue= ""
+                        value={ data && data.hourlyOvertimeSalary ? data.hourlyOvertimeSalary : ""}
                         />
                 </Grid>
             </GridStyled>
@@ -247,8 +280,8 @@ const FormInput = (props: any) => {
                         label="Tunjangan"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "tunjangan")} }
-                        defaultValue={data.tunjangan ?? ""}
-                        value={data.tunjangan ?? ""}
+                        defaultValue= ""
+                        value={ data && data.tunjangan ? data.tunjangan : ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -260,8 +293,8 @@ const FormInput = (props: any) => {
                         label="Fasilitas BPJS"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "fasilitasBpjs")} }
-                        defaultValue={data.fasilitasBpjs ?? ""}
-                        value={data.fasilitasBpjs ?? ""}
+                        defaultValue= ""
+                        value={ data && data.fasilitasBpjs ? data.fasilitasBpjs : ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -273,8 +306,8 @@ const FormInput = (props: any) => {
                         label="Lain-Lain"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "incomeLainLain")} }
-                        defaultValue={data.incomeLainLain ?? ""}
-                        value={data.incomeLainLain ?? ""}
+                        defaultValue= ""
+                        value={ data && data.incomeLainLain ? data.incomeLainLain : ""}
                         />
                 </Grid>
             </GridStyled>
@@ -298,8 +331,8 @@ const FormInput = (props: any) => {
                         label="Iuran BPJS TK/JHT/PENSIUN"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "outcomeBpjstk")} }
-                        defaultValue={data.outcomeBpjstk ?? ""}
-                        value={data.outcomeBpjstk ?? ""}
+                        defaultValue= ""
+                        value={ data && data.outcomeBpjstk ? data.outcomeBpjstk : ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -311,8 +344,8 @@ const FormInput = (props: any) => {
                         label="Pinjaman"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "outcomeDebt")} }
-                        defaultValue={data.outcomeDebt ?? ""}
-                        value={data.outcomeDebt ?? ""}
+                        defaultValue= ""
+                        value={ data && data.outcomeDebt ? data.outcomeDebt : ""}
                         />
                 </Grid>
                 <Grid item lg={3} sm={6}>
@@ -324,8 +357,8 @@ const FormInput = (props: any) => {
                         label="Lain-Lain"
                         className="text-input"
                         onChange={(e)=>{handleChange(e, "outcomeLainLain")} }
-                        defaultValue={data.outcomeLainLain ?? ""}
-                        value={data.outcomeLainLain ?? ""}
+                        defaultValue= ""
+                        value={ data && data.outcomeLainLain ? data.outcomeLainLain : ""}
                         />
                 </Grid>
             </GridStyled>

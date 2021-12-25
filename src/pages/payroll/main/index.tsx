@@ -178,7 +178,7 @@ const IndexPage = () => {
                 </Box>
                 <Box>
                     <Box className="inputedTable" hidden={(tableSelected === "inputed" ? false : true)}>
-                        <Table>
+                        <Table sx={{minHeight: "150px"}}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell width="10%" align='center'>No.</TableCell>
@@ -209,7 +209,7 @@ const IndexPage = () => {
                         </Table>
                     </Box>
                     <Box className="notInputedTable" hidden={(tableSelected === "notInputed" ? false : true)}>
-                        <Table>
+                        <Table sx={{minHeight: "150px"}}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell width="10%" align='center'>No.</TableCell>
