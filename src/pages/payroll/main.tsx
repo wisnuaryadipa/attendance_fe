@@ -2,13 +2,15 @@ import react, {useState, useRef, useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import {Panel, PanelHeader, PanelBody, PanelFooter} from '@components/panel';
 import FormInput from './formInput';
 import {getAxios, postAxios, putAxios} from '@services/axios'
 import { IBasePayroll, IPayroll } from '@src/interfaces/response/IPayroll';
 import {useParams} from 'react-router-dom';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import {useSearchParams} from 'react-router-dom';
+import {useSearchParams, NavLink, Link} from 'react-router-dom';
 import moment from 'moment';
 import IResponse from '@src/interfaces/response/IResponse';
 import IEmployee from '@src/interfaces/response/IEmployee';
@@ -29,6 +31,7 @@ const Payroll = () => {
         year: parseInt(yearNow)
     } as IMonthYear
     const [monthYear, setMonthYear] = useState(initMonthYear);
+    const [employeeBeforeAfter, setEmployeeBeforeAfter] = useState({} as any);
     const refInputData = useRef({} as Partial<IPayroll>);
     const refQueryRoute = useRef({} as any); 
     const {employeeId} = useParams();
@@ -124,22 +127,70 @@ const Payroll = () => {
         return result;
     }
 
+    const fetchBeforeAfterData = async (employeeId: number) => {
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/payroll/${employeeId}/employee-before-after`,
+            method: "GET",
+        }
+        const result = await getAxios<IResponse<any>>(axiosOption)
+        return result;
+    }
+
     useEffect(() => {
+        const runAsync = async () => {
+
+            const _beforeAfter = await fetchBeforeAfterData(parseInt(employeeId!));
+            setEmployeeBeforeAfter(_beforeAfter.data.data);
+            console.log(_beforeAfter)
+        } 
+
         searchParams.forEach((item, key) => {
             setMonthYear({...monthYear, [key]: item});
             refQueryRoute.current = {...refQueryRoute.current, [key]: item}
         })
         setMonthYear({month: refQueryRoute.current.month, year: refQueryRoute.current.year});
+        runAsync();
     },[])
 
+    const queryString = qs.stringify({month: monthYear.month, year: monthYear.year}, { indices: false });
     return (
         <Panel>
             <PanelHeader>
-                <Box>
+                <Box sx={{display: 'flex', flexDirection: "row"}}>
+                    { (() => {
+                            if (employeeBeforeAfter) {
+                                if (employeeBeforeAfter.before && employeeBeforeAfter.before.length > 0) {
+                                    return (
+                                        <NavLink to={`/payroll/${employeeBeforeAfter.before[0].machineId}/form?${queryString}`} >
+                                            <Button sx={{minWidth: "34px", width: "80px", marginRight: "10px"}} variant="outlined">
+                                                <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
+                                            </Button>
+                                        </NavLink>
+                                    )
+                                }
+                                
+                            }
+                    })() }
+                    
                     <Typography variant='h5'>Form Print Payroll</Typography>
                 </Box>
-                <Box>
+                <Box sx={{display: 'flex', flexDirection: "row"}}>
                     <Typography variant='h5'>{monthIDN[monthYear.month-1].toUpperCase()} / {monthYear.year}</Typography>
+                    { (() => {
+                            if (employeeBeforeAfter) {
+                                console.log(employeeBeforeAfter)
+                                if (employeeBeforeAfter.after && employeeBeforeAfter.after.length > 0) {
+
+                                    return (
+                                        <NavLink to={`/payroll/${employeeBeforeAfter.after[0].machineId}/form?${queryString}`} replace={true} >
+                                            <Button sx={{minWidth: "34px", width: "80px", marginLeft: "10px"}} variant="outlined">
+                                                <ArrowForwardIosIcon></ArrowForwardIosIcon>
+                                            </Button>
+                                        </NavLink>
+                                    )
+                                }
+                            }
+                    })() }
                 </Box>
             </PanelHeader>
             <PanelBody>

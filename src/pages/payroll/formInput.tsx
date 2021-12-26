@@ -75,8 +75,9 @@ const FormInput = (props: any) => {
             method: "GET",
         }
         const result = await getAxios<IResponse<IPayroll>>(axiosOption)
-        return result;
+        return result; 
     }
+
 
 
     useEffect(() => {
@@ -108,6 +109,8 @@ const FormInput = (props: any) => {
                         )
                         setData(_payrollData.data.data);
                     }
+
+                    
 
                 }
 
@@ -170,7 +173,7 @@ const FormInput = (props: any) => {
                 </Typography>
                 <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
                     <Typography variant='body2' sx={{color: "red"}}>
-                        Last Input Reference : {monthIDN[data.month!-1]}/{data.year}
+                        Last Input : {data ? `${monthIDN[data.month!-1]} / ${data.year}` : `(Kosong)`}
                     </Typography>
                 </Box>
             </Box>

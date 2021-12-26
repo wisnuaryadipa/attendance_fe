@@ -26,11 +26,14 @@ import { AxiosRequestConfig } from 'axios';
 import {useParams} from 'react-router-dom';
 import qs from 'qs';
 import IResponse from '@src/interfaces/response/IResponse';
+import {NavLink, useNavigate} from 'react-router-dom';
+
 
 
 
 const IndexPage = () => {
 
+    let navigate = useNavigate();
     let years = [] as number[];
     const {month, year} = useParams();
     const initMonth = month ? parseInt(month) : parseInt(moment().format("M"));
@@ -107,6 +110,8 @@ const IndexPage = () => {
 
     const handleClickEdit = async (e: MouseEvent<HTMLButtonElement>, value: any) => {
         const query = qs.stringify({month: monthYear.month, year: monthYear.year});
+        const employeeId = e.currentTarget.dataset['id'];
+        // navigate(`/payroll/${employeeId}/form?${query}`, {replace: true})
     }
 
     const handleClickPrintAll = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -115,7 +120,7 @@ const IndexPage = () => {
     }
 
 
-    years = buildArrRangeNumber(2015, initYear);
+    years = buildArrRangeNumber(2015, initYear+1);
     return (
         <Panel>
             <PanelHeader>
@@ -188,18 +193,23 @@ const IndexPage = () => {
                             </TableHead>
                             <TableBody>
                                 {dataInputed.map((item: any, key: any) => {
+                                    const query = qs.stringify({month: monthYear.month, year: monthYear.year});
                                     return (
                                         <TableRow>
                                             <TableCell align='center'>{key+1}</TableCell>
                                             <TableCell>{item.name}</TableCell>
                                             <TableCell align='center'>
                                                 <ButtonGroup>
-                                                    <Button value={item.id} onClick={e => handleClickEdit(e, item.id)}>
-                                                        <EditIcon/>
-                                                    </Button>
-                                                    <Button value={item.id} onClick={e => handleClickPrint(e, item.id)}>
-                                                        <PrintIcon/>
-                                                    </Button>
+                                                    <NavLink to={`/payroll/${item.machineId}/form?${query}`} replace={false} target="_blank" >
+                                                        <Button value={item.id} onClick={e => handleClickEdit(e, item.id)}>
+                                                            <EditIcon/>
+                                                        </Button>
+                                                    </NavLink>
+                                                    <NavLink to={`/`} target="_blank">
+                                                        <Button value={item.id} onClick={e => handleClickPrint(e, item.id)}>
+                                                            <PrintIcon/>
+                                                        </Button>
+                                                    </NavLink>
                                                 </ButtonGroup>
                                             </TableCell>
                                         </TableRow>
@@ -219,15 +229,18 @@ const IndexPage = () => {
                             </TableHead>
                             <TableBody>
                                 {dataNotInputed.map((item: any, key: any) => {
+                                    const query = qs.stringify({month: monthYear.month, year: monthYear.year});
                                     return (
                                         <TableRow>
                                             <TableCell align='center'>{key+1}</TableCell>
                                             <TableCell>{item.name}</TableCell>
                                             <TableCell align='center'>
                                                 <ButtonGroup>
-                                                    <Button value={item.id} onClick={e => handleClickEdit(e, item.id)}>
-                                                        <AddIcon/>
-                                                    </Button>
+                                                    <NavLink to={`/payroll/${item.machineId}/form?${query}`} replace={true} target="_blank" >
+                                                        <Button value={item.id} data-id={item.machineId} onClick={e => handleClickEdit(e, item.id)}>
+                                                            <AddIcon/>
+                                                        </Button>
+                                                    </NavLink>
                                                 </ButtonGroup>
                                             </TableCell>
                                         </TableRow>
