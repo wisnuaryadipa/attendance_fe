@@ -122,6 +122,36 @@ const FormInput = (props: any) => {
             
         }
     },[])
+    
+    useEffect( () => {
+        const loadSync = async () => {
+
+            const _employeeData = await fetchEmployeeData(
+                refMonthYear.current.month,
+                refMonthYear.current.year,
+                parseInt(employeeId!)
+            )
+
+            if (_employeeData && _employeeData.status === 201 ) {
+                
+                setEmployee(_employeeData.data.data)
+                if (!_employeeData.data.data){ setIsPositionIdExist(false) }
+                if(_employeeData.data.data.payrolls[0]) {
+                    setData(_employeeData.data.data.payrolls[0]);
+                } else {
+                    const _payrollData = await fetchPayrollData(
+                        refMonthYear.current.month,
+                        refMonthYear.current.year,
+                        parseInt(employeeId!)
+                    )
+                    setData(_payrollData.data.data);
+                }
+            }
+            setLoading(false)
+        }
+
+        loadSync();
+    },[employeeId])
 
     const handleChangeSelect = async (event: SelectChangeEvent<unknown>, name: string) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
@@ -139,12 +169,6 @@ const FormInput = (props: any) => {
     if (!isPositionIdExist){ return (<NotFoundPage/>)}
     return (
         <Box>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
             <Box>
                 <GridStyled container spacing={2} rowSpacing={3} >
                     <Grid item lg={3} sm={6}>

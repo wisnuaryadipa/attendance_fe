@@ -16,6 +16,8 @@ import IResponse from '@src/interfaces/response/IResponse';
 import IEmployee from '@src/interfaces/response/IEmployee';
 import qs from 'qs';
 import {monthIDN} from '@src/static/common';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 
 interface IMonthYear {
     month: number,
@@ -36,6 +38,7 @@ const Payroll = () => {
     const refQueryRoute = useRef({} as any); 
     const {employeeId} = useParams();
     const refLoading = useRef(false);
+    const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParam] = useSearchParams();
 
     const updateInputData = (val:any) => {
@@ -141,7 +144,6 @@ const Payroll = () => {
 
             const _beforeAfter = await fetchBeforeAfterData(parseInt(employeeId!));
             setEmployeeBeforeAfter(_beforeAfter.data.data);
-            console.log(_beforeAfter)
         } 
 
         searchParams.forEach((item, key) => {
@@ -152,20 +154,41 @@ const Payroll = () => {
         runAsync();
     },[])
 
+    useEffect( () => {
+        const runAsync = async () => {
+            const _beforeAfter = await fetchBeforeAfterData(parseInt(employeeId!));
+            setEmployeeBeforeAfter(_beforeAfter.data.data);
+            setLoading(false);
+        } 
+        setMonthYear({month: refQueryRoute.current.month, year: refQueryRoute.current.year});
+        if(loading){
+            runAsync()
+        };
+        console.log(`Route has been changed - ${employeeId}`)
+    },[employeeId, loading])
+
     const queryString = qs.stringify({month: monthYear.month, year: monthYear.year}, { indices: false });
     return (
         <Panel>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <PanelHeader>
                 <Box sx={{display: 'flex', flexDirection: "row"}}>
                     { (() => {
                             if (employeeBeforeAfter) {
                                 if (employeeBeforeAfter.before && employeeBeforeAfter.before.length > 0) {
                                     return (
-                                        <NavLink to={`/payroll/${employeeBeforeAfter.before[0].machineId}/form?${queryString}`} >
+                                        <Link 
+                                        to={`/payroll/${employeeBeforeAfter.before[0].machineId}/form?${queryString}`} 
+                                        onClick={() => setLoading(true)} >
                                             <Button sx={{minWidth: "34px", width: "80px", marginRight: "10px"}} variant="outlined">
                                                 <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
                                             </Button>
-                                        </NavLink>
+                                        </Link>
                                     )
                                 }
                                 
@@ -182,11 +205,14 @@ const Payroll = () => {
                                 if (employeeBeforeAfter.after && employeeBeforeAfter.after.length > 0) {
 
                                     return (
-                                        <NavLink to={`/payroll/${employeeBeforeAfter.after[0].machineId}/form?${queryString}`} replace={true} >
+                                        <Link 
+                                        to={`/payroll/${employeeBeforeAfter.after[0].machineId}/form?${queryString}`} 
+                                        replace={true} 
+                                        onClick={() => setLoading(true)} >
                                             <Button sx={{minWidth: "34px", width: "80px", marginLeft: "10px"}} variant="outlined">
                                                 <ArrowForwardIosIcon></ArrowForwardIosIcon>
                                             </Button>
-                                        </NavLink>
+                                        </Link>
                                     )
                                 }
                             }
