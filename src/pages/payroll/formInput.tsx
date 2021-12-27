@@ -84,37 +84,33 @@ const FormInput = (props: any) => {
 
         const loadSync = async () => {
 
-                searchParams.forEach((item, key) => {
-                    setMonthYear({...monthYear, [key]: item});
-                    refMonthYear.current = {...refMonthYear.current, [key]: item}
-                })
+            searchParams.forEach((item, key) => {
+                setMonthYear({...monthYear, [key]: item});
+                refMonthYear.current = {...refMonthYear.current, [key]: item}
+            })
 
-                const _employeeData = await fetchEmployeeData(
-                    refMonthYear.current.month,
-                    refMonthYear.current.year,
-                    parseInt(employeeId!)
-                )
+            const _employeeData = await fetchEmployeeData(
+                refMonthYear.current.month,
+                refMonthYear.current.year,
+                parseInt(employeeId!)
+            )
 
-                if (_employeeData && _employeeData.status === 201 ) {
-                    
-                    setEmployee(_employeeData.data.data)
-                    if (!_employeeData.data.data){ setIsPositionIdExist(false) }
-                    if(_employeeData.data.data.payrolls[0]) {
-                        setData(_employeeData.data.data.payrolls[0]);
-                    } else {
-                        const _payrollData = await fetchPayrollData(
-                            refMonthYear.current.month,
-                            refMonthYear.current.year,
-                            parseInt(employeeId!)
-                        )
-                        setData(_payrollData.data.data);
-                    }
-
-                    
-
+            if (_employeeData && _employeeData.status === 201 ) {
+                
+                setEmployee(_employeeData.data.data)
+                if (!_employeeData.data.data){ setIsPositionIdExist(false) }
+                if(_employeeData.data.data.payrolls[0]) {
+                    setData(_employeeData.data.data.payrolls[0]);
+                } else {
+                    const _payrollData = await fetchPayrollData(
+                        refMonthYear.current.month,
+                        refMonthYear.current.year,
+                        parseInt(employeeId!)
+                    )
+                    setData(_payrollData.data.data);
                 }
-
-                setLoading(false)
+            }
+            setLoading(false)
         }
 
         if(loading === true){
@@ -165,8 +161,8 @@ const FormInput = (props: any) => {
         props.inputData(refData.current)
     };
 
-
-    if (!isPositionIdExist){ return (<NotFoundPage/>)}
+    if (loading){ return (<></>)} else { if (!isPositionIdExist){ return (<NotFoundPage/>)} }
+    
     return (
         <Box>
             <Box>

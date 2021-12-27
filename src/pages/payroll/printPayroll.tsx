@@ -1,10 +1,16 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
 import moment from 'moment';
 import qs from 'qs'
-import {useSearchParams} from 'react-router-dom'
+import {useSearchParams, useParams} from 'react-router-dom'
+import IResponse from '@src/interfaces/response/IResponse';
+import IEmployee from '@src/interfaces/response/IEmployee';
+import { getAxios } from '@src/services/axios';
+import { AxiosRequestConfig } from 'axios';
+import { MonthYear } from '@src/types/common';
+import NotFoundPage from '@pages/404'
 
 interface IMonthYear {
     month: number,
@@ -50,18 +56,55 @@ const PrintLayoutPayroll = () => {
     } as IMonthYear
     
     const [monthYear, setMonthYear] = useState(initMonthYear);
+    const [loading, setLoading] = useState(true);
+    const [employee, setEmployee] = useState({} as Partial<IEmployee>);
     const [searchParams, setSearchParam] = useSearchParams();
+    const refMonthYear = useRef({} as MonthYear);
+    const refIsEmployeeAvailable = useRef(false);
+    const {employeeId} = useParams();
     const month = searchParams.get('month') || "";
 
     useEffect(() => {
 
-        console.log("month")
+        const loadSync = async () => {
+
+            searchParams.forEach((item, key) => {
+                setMonthYear({...monthYear, [key]: item});
+                refMonthYear.current = {...refMonthYear.current, [key]: item}
+            })
+
+            const _employeeData = await fetchEmployeeData(
+                refMonthYear.current.month,
+                refMonthYear.current.year,
+                parseInt(employeeId!)
+            )
+
+            if (_employeeData && _employeeData.status === 201 ) {
+                if (_employeeData.data.data){ refIsEmployeeAvailable.current = true }
+                setEmployee(_employeeData.data.data)
+            }
+            setLoading(false)
+        }
+
+        if(loading === true){
+            loadSync();
+        }
     },[])
 
 
+    const fetchEmployeeData = async (month: number, year: number, employeeId: number) => {
+        const queryString = qs.stringify({month: month, year: year}, { indices: false });
+        const axiosOption: AxiosRequestConfig = {
+            url: `http://localhost:3001/api/payroll/${employeeId}?${queryString}`,
+            method: "GET",
+        }
+        const result = await getAxios<IResponse<IEmployee>>(axiosOption)
+        return result;
+    }
 
 
-
+    if (loading){ return (<></>)} else {if (!refIsEmployeeAvailable.current){ return (<NotFoundPage/>)}}
+    
     return (
 
         <PrintArea>
