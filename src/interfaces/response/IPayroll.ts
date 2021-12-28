@@ -19,7 +19,7 @@ export interface IBasePayroll {
     outcomeLainLain: number;
     createdAt: Date;
     updatedAt: Date;
-    selectedSalaryType: boolean;
+    selectedSalaryType?: boolean;
 }
 
 export interface IPayroll extends IBasePayroll {

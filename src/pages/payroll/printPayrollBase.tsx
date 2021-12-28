@@ -26,7 +26,6 @@ type Props = {
 
 const PrintArea = styled(Box)`
     padding: 10px 20px;
-    position: absolute;
     left: 0;
     top: 0;
     background-color: #ffffff;
@@ -50,7 +49,7 @@ const PrintArea = styled(Box)`
     }
 `
 
-const PrintLayoutPayroll = () => {
+const PrintLayoutPayroll = (props: any) => {
     const monthNow = moment().format('M');
     const yearNow = moment().format("YYYY");
     const initMonthYear = {
@@ -91,43 +90,16 @@ const PrintLayoutPayroll = () => {
     useEffect(() => {
 
         const loadSync = async () => {
-
-            searchParams.forEach((item, key) => {
-                setMonthYear({...monthYear, [key]: item});
-                refMonthYear.current = {...refMonthYear.current, [key]: item}
-            })
-
-            const _employeeData = await fetchEmployeeData(
-                refMonthYear.current.month,
-                refMonthYear.current.year,
-                parseInt(employeeId!)
-            )
-
-            if (_employeeData && _employeeData.status === 201 ) {
-                if (_employeeData.data.data){ refIsEmployeeAvailable.current = true }
-                setEmployee(_employeeData.data.data)
-            }
-            setLoading(false)
+            setEmployee(props.employeeData);
         }
+
+        setMonthYear({...monthYear, month: props.month, year: props.year});
+        refMonthYear.current = {...refMonthYear.current, month: props.month, year: props.year}
 
         if(loading === true){
             loadSync();
         }
     },[])
-
-
-    const fetchEmployeeData = async (month: number, year: number, employeeId: number) => {
-        const queryString = qs.stringify({month: month, year: year}, { indices: false });
-        const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/payroll/${employeeId}?${queryString}`,
-            method: "GET",
-        }
-        const result = await getAxios<IResponse<IEmployee>>(axiosOption)
-        return result;
-    }
-
-
-    if (loading){ return (<></>)} else {if (!refIsEmployeeAvailable.current){ return (<NotFoundPage/>)}}
     
     return (
 

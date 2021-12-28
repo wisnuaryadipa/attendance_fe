@@ -12,6 +12,7 @@ import attendanceRoutes from './attendanceRoutes';
 import payrollRoutes from './payrollRoutes';
 
 import PrintPayroll from '@pages/payroll/printPayroll';
+import PrintPayrollAll from '@pages/payroll/printPayrollMany';
 
 
 const ContainerStyled = styled(Container)`
@@ -39,6 +40,7 @@ const Router = () => {
                     
                 </Route>
                 <Route caseSensitive={true} path="/">
+                    <Route path={`payroll/printall`} element={<PrintPayrollAll/>}></Route>
                     <Route path={`payroll/:employeeId/print`} element={<PrintPayroll/>}></Route>
                 </Route>
                 <Route path="*" element={<Pages.Page404/>}> </Route>

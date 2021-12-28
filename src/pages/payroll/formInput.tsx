@@ -161,8 +161,7 @@ const FormInput = (props: any) => {
         props.inputData(refData.current)
     };
 
-    if (loading){ return (<></>)} else { if (!isPositionIdExist){ return (<NotFoundPage/>)} }
-    
+    if (!isPositionIdExist){ return (<NotFoundPage/>)}
     return (
         <Box>
             <Box>
@@ -220,8 +219,8 @@ const FormInput = (props: any) => {
                         label="Tipe Penggajian"
                         onChange={ (e)=>{handleChangeSelect(e, "selectedSalaryType")} }
                         className="text-input"
-                        defaultValue="true"
-                        value={ data && data.selectedSalaryType ? data.selectedSalaryType : ""}
+                        defaultValue=""
+                        value={ data && (data.selectedSalaryType !== undefined) ? data.selectedSalaryType : ""}
                         dataList={selectSalaryType}
                         /> 
                 </Grid>

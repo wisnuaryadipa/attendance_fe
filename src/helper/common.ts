@@ -13,3 +13,7 @@ export const buildArrRangeNumber = (startNumber: number, finishNumber: number) =
     }
     return arrNumber;
 }
+
+export const addDotNumberCurrency = (x: number) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
