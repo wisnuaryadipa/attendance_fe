@@ -36,7 +36,7 @@ export default function BasicTable() {
   
   const fetchDivisions = async () => {
     const axiosOption: AxiosRequestConfig = {
-      url: 'http://localhost:3001/api/master/division/get-all',
+      url: `${process.env.REACT_APP_URL_API}/api/master/division/get-all`,
       method: "GET",
     }
     const response = await getAxios<IResponse<IDivision[]>>(axiosOption);

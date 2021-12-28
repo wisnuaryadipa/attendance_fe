@@ -44,7 +44,7 @@ const Render = (): JSX.Element => {
             formData.append('file', file, file.name);
     
             const option = {
-                url: "http://localhost:3001/api/status",
+                url: `${process.env.REACT_APP_URL_API}/api/status`,
                 data: formData,
                 onUploadProgress: progressEvent => activeLoading(progressEvent),
                 headers: {

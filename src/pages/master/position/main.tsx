@@ -42,7 +42,7 @@ export default function MainPosition() {
 
     const fetchPositions = async () => {
         const axiosOption: AxiosRequestConfig = {
-            url: 'http://localhost:3001/api/master/position/get-all',
+            url: `${process.env.REACT_APP_URL_API}/api/master/position/get-all`,
             method: "GET",
         }
         

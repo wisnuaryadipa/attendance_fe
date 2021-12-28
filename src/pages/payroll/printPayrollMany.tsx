@@ -98,7 +98,7 @@ const PrintLayoutPayroll = () => {
     const fetchEmployeeData = async (month: number, year: number, employeeId: number) => {
         const queryString = qs.stringify({month: month, year: year, inputedPayroll: 2 }, { indices: false });
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api//master/employees/payroll?${queryString}`,
+            url: `${process.env.REACT_APP_URL_API}/api//master/employees/payroll?${queryString}`,
             method: "GET",
         }
         const result = await getAxios<IResponse<IEmployee[]>>(axiosOption)

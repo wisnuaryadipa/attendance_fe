@@ -53,7 +53,7 @@ const MainDetail = () => {
         dataSend.append('month', monthYear.month);
         dataSend.append('year', monthYear.year);
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/attendance/filter/${employeeId}`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/attendance/filter/${employeeId}`,
             data: dataSend
         }
 
@@ -65,7 +65,7 @@ const MainDetail = () => {
 
     const fetchDetailEmployee = useCallback(async () => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/employee/${employeeId}`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/employee/${employeeId}`,
         }
         const response = await getAxios<IResponse<IEmployee>>(axiosOption);
         return response;

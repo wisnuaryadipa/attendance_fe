@@ -48,7 +48,7 @@ const PositionEdit = () => {
     
     const fetchDivisions = async () => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/division/get-all`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/division/get-all`,
         }
         const response = await getAxios<IResponse<IDivision[]>>(axiosOption);
         setDivisions(response.data.data)
@@ -63,7 +63,7 @@ const PositionEdit = () => {
   
     const fetchPositionById = async (id: string) => {
         const axiosOption: AxiosRequestConfig = {
-          url: `http://localhost:3001/api/master/position/${id}`,
+          url: `${process.env.REACT_APP_URL_API}/api/master/position/${id}`,
         }
         const response = await getAxios<IResponse<IPosition>>(axiosOption);
         return response;
@@ -71,7 +71,7 @@ const PositionEdit = () => {
 
     const updatePositionById = async (id: string, data: URLSearchParams) => {
         const axiosOption: any = {
-            url: `http://localhost:3001/api/master/position/edit/${id}`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/position/edit/${id}`,
             method: "PUT",
             data: data,
             headers: { "Content-Type": "application/x-www-form-urlencoded" }

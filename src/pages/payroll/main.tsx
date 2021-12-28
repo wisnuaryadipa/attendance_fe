@@ -49,7 +49,7 @@ const Payroll = () => {
         let result = false;
         const queryString = qs.stringify({month: month, year: year}, { indices: false });
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/payroll/${employeeId}?${queryString}`,
+            url: `${process.env.REACT_APP_URL_API}/api/payroll/${employeeId}?${queryString}`,
             method: "GET",
         }
         const resResult = await getAxios<IResponse<IEmployee>>(axiosOption)
@@ -73,7 +73,7 @@ const Payroll = () => {
 
     const addPayrollData = async (data: URLSearchParams) => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/payroll/${employeeId}`,
+            url: `${process.env.REACT_APP_URL_API}/api/payroll/${employeeId}`,
             data: data,
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
@@ -84,7 +84,7 @@ const Payroll = () => {
 
     const updatePayrollData = async (data: URLSearchParams) => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/payroll/${employeeId}/${monthYear.year}/${monthYear.month}`,
+            url: `${process.env.REACT_APP_URL_API}/api/payroll/${employeeId}/${monthYear.year}/${monthYear.month}`,
             data: data,
             method: "PUT",
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
@@ -132,7 +132,7 @@ const Payroll = () => {
 
     const fetchBeforeAfterData = async (employeeId: number) => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/payroll/${employeeId}/employee-before-after`,
+            url: `${process.env.REACT_APP_URL_API}/api/payroll/${employeeId}/employee-before-after`,
             method: "GET",
         }
         const result = await getAxios<IResponse<any>>(axiosOption)

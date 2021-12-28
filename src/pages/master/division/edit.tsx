@@ -46,7 +46,7 @@ const ResultComponent = (props: any): JSX.Element => {
 
     const fetchDivisionById = async (id: string) => {
         const axiosOption: AxiosRequestConfig = {
-          url: `http://localhost:3001/api/master/division/${id}`,
+          url: `${process.env.REACT_APP_URL_API}/api/master/division/${id}`,
         }
         const response = await getAxios<IResponse<IDivision>>(axiosOption);
         return response;
@@ -59,7 +59,7 @@ const ResultComponent = (props: any): JSX.Element => {
 
     const addDivision = async (data: URLSearchParams) => {
         const option: any = {
-            url: `http://localhost:3001/api/master/division/edit/${divisionId}`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/division/edit/${divisionId}`,
             method: "PUT",
             data: data,
             headers: { "Content-Type": "application/x-www-form-urlencoded" }

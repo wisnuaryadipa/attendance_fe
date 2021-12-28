@@ -29,7 +29,7 @@ export default function MainEmployee() {
     const [loadingData, setLoadingData] = useState(true);
     const [employees, setEmployees] = useState([] as Partial<IEmployee[]>);
     const axiosOption: AxiosRequestConfig = {
-        url: 'http://localhost:3001/api/master/employee/get-all',
+        url: `${process.env.REACT_APP_URL_API}/api/master/employee/get-all`,
         method: "GET",
     }
 

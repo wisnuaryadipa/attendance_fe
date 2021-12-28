@@ -36,7 +36,7 @@ const ResultComponent = (props: any) => {
 
     const fetchPosition = async () => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/position/get-all`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/position/get-all`,
         }
         const response = await getAxios<IResponse<IPosition[]>>(axiosOption);
         setPositions(response.data.data)
@@ -44,7 +44,7 @@ const ResultComponent = (props: any) => {
     }
     
     const addEmployee = async (data: URLSearchParams) => {
-        const url = "http://localhost:3001/api/master/employee/add";
+        const url = "${process.env.REACT_APP_URL_API}/api/master/employee/add";
         const axiosOption: AxiosRequestConfig = {
             url: url,
             data: data,

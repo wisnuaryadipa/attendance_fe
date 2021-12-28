@@ -46,7 +46,7 @@ const PositionAdd = (props: any) => {
     
     const fetchDivisions = async () => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/division/get-all`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/division/get-all`,
         }
         const response = await getAxios<IResponse<IDivision[]>>(axiosOption);
         setDivisions(response.data.data)
@@ -55,7 +55,7 @@ const PositionAdd = (props: any) => {
 
     const addPosition = async (data: URLSearchParams) => {
         const axiosOption: AxiosRequestConfig = {
-            url: "http://localhost:3001/api/master/position/add",
+            url: `${process.env.REACT_APP_URL_API}/api/master/position/add`,
             data: data,
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" }

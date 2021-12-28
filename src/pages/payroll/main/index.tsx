@@ -49,7 +49,7 @@ const IndexPage = () => {
     const fetchDataInputed = useCallback(async () => {
         const query = qs.stringify({year: monthYear.year, month: monthYear.month, inputedPayroll: 2}, {indices: false});
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/employees/payroll?${query}`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/employees/payroll?${query}`,
             method: "GET",
         }
 
@@ -63,7 +63,7 @@ const IndexPage = () => {
     const fetchDataNotInputed = useCallback(async () => {
         const query = qs.stringify({year: monthYear.year, month: monthYear.month, inputedPayroll: 1}, {indices: false});
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/employees/payroll?${query}`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/employees/payroll?${query}`,
             method: "GET",
         }
 

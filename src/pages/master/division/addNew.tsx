@@ -31,7 +31,7 @@ const ResultComponent = (props: any) => {
 
     const addDivision = async (data: URLSearchParams) => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/division/add`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/division/add`,
             data: data,
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" }

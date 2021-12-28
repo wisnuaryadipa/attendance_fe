@@ -42,7 +42,7 @@ const ResultComponent = () => {
 
     const fetchPosition = async () => {
         const axiosOption: AxiosRequestConfig = {
-            url: `http://localhost:3001/api/master/position/get-all`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/position/get-all`,
         }
         const response = await getAxios<IResponse<IPosition[]>>(axiosOption);
         setPositions(response.data.data)
@@ -57,7 +57,7 @@ const ResultComponent = () => {
 
     const fetchEmployeeById = async (id: string) => {
         const axiosOption: AxiosRequestConfig = {
-          url: `http://localhost:3001/api/master/employee/${id}`,
+          url: `${process.env.REACT_APP_URL_API}/api/master/employee/${id}`,
         }
         const response = await getAxios<IResponse<IEmployee>>(axiosOption);
         return response;
@@ -65,7 +65,7 @@ const ResultComponent = () => {
 
     const updateEmployeeById = async (id: string, data: URLSearchParams) => {
         const axiosOption: any = {
-            url: `http://localhost:3001/api/master/employee/edit/${id}`,
+            url: `${process.env.REACT_APP_URL_API}/api/master/employee/edit/${id}`,
             method: "PUT",
             data: data,
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
