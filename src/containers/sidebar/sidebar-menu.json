@@ -19,7 +19,17 @@
             {
                 "itemName": "Upload Attendance",
                 "iconName": "LineStyle",
-                "url": "attendance/upload"
+                "url": "/attendance/upload"
+            }
+        ]
+    },
+    {
+        "title": "Payroll",
+        "child": [
+            {
+                "itemName": "Payroll",
+                "iconName": "LineStyle",
+                "url": "/payroll"
             }
         ]
     },
@@ -29,17 +39,17 @@
             {
                 "itemName": "Employee",
                 "iconName": "LineStyle",
-                "url": "master/employee"
+                "url": "/master/employee"
             },
             {
                 "itemName": "Position",
                 "iconName": "LineStyle",
-                "url": "master/position"
+                "url": "/master/position"
             },
             {
                 "itemName": "Division",
                 "iconName": "LineStyle",
-                "url": "master/division"
+                "url": "/master/division"
             }
         ]
         

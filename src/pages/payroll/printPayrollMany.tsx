@@ -61,6 +61,8 @@ const PrintLayoutPayroll = () => {
     const [loading, setLoading] = useState(true);
     const [employees, setEmployees] = useState({} as Partial<IEmployee[]>);
     const [searchParams, setSearchParam] = useSearchParams();
+    const monthQuery = searchParams.get('month') ?? undefined;
+    const yearQuery = searchParams.get('year') ?? undefined;
     const refMonthYear = useRef({} as MonthYear);
     const refIsEmployeeAvailable = useRef(false);
     const {employeeId} = useParams();
@@ -70,11 +72,8 @@ const PrintLayoutPayroll = () => {
     useEffect(() => {
 
         const loadSync = async () => {
-
-            searchParams.forEach((item, key) => {
-                setMonthYear({...monthYear, [key]: item});
-                refMonthYear.current = {...refMonthYear.current, [key]: item}
-            })
+            refMonthYear.current.month = monthQuery ? parseInt(monthQuery) : monthYear.month;
+            refMonthYear.current.year = yearQuery ? parseInt(yearQuery) : monthYear.year;
 
             const _employeeData = await fetchEmployeeData(
                 refMonthYear.current.month,

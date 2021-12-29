@@ -115,8 +115,16 @@ const IndexPage = () => {
     }
 
     const handleClickPrintAll = async (e: MouseEvent<HTMLButtonElement>) => {
-        const query = qs.stringify({month: monthYear.month, year: monthYear.year});
 
+    }
+
+    const BtnPrintAll = () => {
+        const query = qs.stringify({month: monthYear.month, year: monthYear.year});
+        return (
+            <NavLink to={`/payroll/printall?${query}`} replace={false} target="_blank">
+                <Button variant="outlined" onClick={handleClickPrintAll}>Print All</Button>
+            </NavLink>
+        )
     }
 
 
@@ -178,7 +186,7 @@ const IndexPage = () => {
                         </ToggleButtonGroup>
                     </Box>
                     <Box>
-                        { (tableSelected === "inputed") && <Button variant="outlined" onClick={handleClickPrintAll}>Print All</Button> }
+                        { (tableSelected === "inputed") && <BtnPrintAll/> }
                     </Box>
                 </Box>
                 <Box>

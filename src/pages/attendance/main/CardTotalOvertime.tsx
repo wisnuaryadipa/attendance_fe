@@ -13,7 +13,7 @@ const TotalOvertime = () => {
         <Card>
             <Box sx={{display: 'flex'}}>
                 <Box sx={{display: 'flex', alignItems: 'center', width: '100px' }}>
-                    <AccessAlarmIcon sx={{fontSize: "50pt !important", margin: '0px 10px'}}/>
+                    <AccessAlarmIcon sx={{fontSize: "50pt !important", margin: '0px 10px', width: '175px !important'}}/>
                 </Box>
                 <CardContent sx={{paddingBottom: "0px !important", width: "100%"}} >
                     <Typography align='center' gutterBottom variant="h5" component="div">
