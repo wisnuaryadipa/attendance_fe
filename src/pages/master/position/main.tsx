@@ -63,7 +63,7 @@ export default function MainPosition() {
             <PanelHeader>
                 <Typography variant="h5">Position List</Typography>
                 <SearchBox className="headline-action">
-                    <Paper
+                    {/* <Paper
                     component="form"
                     sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
                     >
@@ -73,7 +73,7 @@ export default function MainPosition() {
                             placeholder={`Search Position List`}
                             inputProps={{ 'aria-label': 'search google maps' }}
                         />
-                    </Paper>
+                    </Paper> */}
                     <NavLink to="/master/position/create">
                         <Button 
                         variant="contained" 
