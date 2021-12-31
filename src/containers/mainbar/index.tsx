@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const mainBar: FC = styled((props) => (
         <div className="mainBar" {...props}>
-                MainBar
+                
         </div>
 ))`
         flex: 5;

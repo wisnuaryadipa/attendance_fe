@@ -213,7 +213,7 @@ const IndexPage = () => {
                                                             <EditIcon/>
                                                         </Button>
                                                     </NavLink>
-                                                    <NavLink to={`/`} target="_blank">
+                                                    <NavLink to={`/payroll/${item.machineId}/print`} target="_blank">
                                                         <Button value={item.id} onClick={e => handleClickPrint(e, item.id)}>
                                                             <PrintIcon/>
                                                         </Button>

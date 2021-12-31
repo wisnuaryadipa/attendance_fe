@@ -86,6 +86,7 @@ const PrintLayoutPayroll = () => {
                 setEmployees(_employeeData.data.data)
             }
             setLoading(false)
+            window.print()
         }
 
         if(loading === true){

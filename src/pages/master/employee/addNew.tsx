@@ -44,7 +44,7 @@ const ResultComponent = (props: any) => {
     }
     
     const addEmployee = async (data: URLSearchParams) => {
-        const url = "${process.env.REACT_APP_URL_API}/api/master/employee/add";
+        const url = `${process.env.REACT_APP_URL_API}/api/master/employee/add`;
         const axiosOption: AxiosRequestConfig = {
             url: url,
             data: data,
