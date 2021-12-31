@@ -67,6 +67,8 @@ const PrintLayoutPayroll = () => {
     const refIsEmployeeAvailable = useRef(false);
     const {employeeId} = useParams();
     const month = searchParams.get('month') || "";
+    const refCompleteRendered = useRef(false);
+    const [rendered, setRendered] = useState(false);
 
 
     useEffect(() => {
@@ -108,9 +110,37 @@ const PrintLayoutPayroll = () => {
 
     if (loading){ return (<></>)} else {if (!refIsEmployeeAvailable.current){ return (<NotFoundPage/>)}}
     
+    const countPage = Math.ceil(employees.length / 4);
     return (
         <Box sx={{position: 'absolute', left: "0"}}>
-            {(() => {
+            {[...Array(countPage)].map((e,i) => {
+                i = i+1;
+                return (
+                    <Box sx={{width: '21cm', height: '29.7cm'}}>
+                            <Grid container>
+                                {employees.map((employee, key) => {
+                                    if ( key >= (i-1)*4 && key < (i*4)){
+                                        return (
+                                            <Grid item xs={6}>
+                                                <PrintPayrollBase 
+                                                employeeData={employee} 
+                                                month={monthYear.month} 
+                                                year={monthYear.year}/>
+                                            </Grid>
+                                        )
+                                    } else {
+                                        return ""
+                                    }
+                                    
+                                })}
+                            </Grid>
+                            
+                        </Box>
+                )
+            })}
+
+
+            {/* {(() => {
                 const PagePrint = [];
                 const countPage = Math.ceil(employees.length / 4);
                 for (let i = 1; i <= countPage; i++) {
@@ -120,14 +150,12 @@ const PrintLayoutPayroll = () => {
                                 {employees.map((employee, key) => {
                                     if ( key >= (i-1)*4 && key < (i*4)){
                                         return (
-                                        
                                             <Grid item xs={6}>
                                                 <PrintPayrollBase 
                                                 employeeData={employee} 
                                                 month={monthYear.month} 
                                                 year={monthYear.year}/>
                                             </Grid>
-                                            
                                         )
                                     } else {
                                         return ""
@@ -140,7 +168,7 @@ const PrintLayoutPayroll = () => {
                     )
                 }
                 return PagePrint
-            })()}
+            })()} */}
         </Box>
     )
 }

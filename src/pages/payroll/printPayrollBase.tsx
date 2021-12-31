@@ -57,9 +57,9 @@ const PrintLayoutPayroll = (props: any) => {
         year: parseInt(yearNow)
     } as IMonthYear
     
-    const [monthYear, setMonthYear] = useState(initMonthYear);
+    const [monthYear, setMonthYear] = useState({month: props.month, year: props.year});
     const [loading, setLoading] = useState(true);
-    const [employee, setEmployee] = useState({} as Partial<IEmployee>);
+    const [employee, setEmployee] = useState(props.employeeData as Partial<IEmployee>);
     const [searchParams, setSearchParam] = useSearchParams();
     const refMonthYear = useRef({} as MonthYear);
     const refIsEmployeeAvailable = useRef(false);
@@ -88,17 +88,7 @@ const PrintLayoutPayroll = (props: any) => {
     const totalPaymentReceived = totalIncome - totalOutcome;
 
     useEffect(() => {
-
-        const loadSync = async () => {
-            setEmployee(props.employeeData);
-        }
-
-        setMonthYear({...monthYear, month: props.month, year: props.year});
         refMonthYear.current = {...refMonthYear.current, month: props.month, year: props.year}
-
-        if(loading === true){
-            loadSync();
-        }
     },[])
     
     return (
