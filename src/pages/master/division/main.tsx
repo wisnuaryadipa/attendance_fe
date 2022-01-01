@@ -3,6 +3,7 @@ import {NavLink} from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
+import Box from '@mui/material/Box';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -16,6 +17,7 @@ import axios, {AxiosRequestConfig} from 'axios';
 import Typography from '@mui/material/Typography';
 import { getAxios } from '@services/axios';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import IResponse from '@interfaces/response/IResponse';
 import IDivision from '@interfaces/response/IDivision';
 
@@ -99,13 +101,20 @@ export default function BasicTable() {
                 </TableCell>
                 <TableCell align="left">{division.name}</TableCell>
                 <TableCell align="right">
-                  <NavLink to={`/master/division/${division.id}/edit`} replace={false} >
-                      <Button 
-                      variant='contained' 
-                      color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
-                          <EditIcon sx={{width: '20px !important'}} />
-                      </Button>
-                  </NavLink>
+                  <Box sx={{display: "inline-flex"}}>
+                    <NavLink to={`/master/division/${division.id}/edit`} replace={false} >
+                        <Button 
+                        variant='contained' 
+                        color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
+                            <EditIcon sx={{width: '20px !important'}} />
+                        </Button>
+                    </NavLink>
+                    <Button 
+                    variant='contained' 
+                    color='error' sx={{minWidth: "40px !important", width: "40px"  }} >
+                        <DeleteIcon sx={{width: '20px !important'}} />
+                    </Button>
+                  </Box>
                 </TableCell>
                 </TableRow>
             ))}

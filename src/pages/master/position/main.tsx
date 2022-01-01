@@ -5,6 +5,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import TableRow from '@mui/material/TableRow';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,6 +18,7 @@ import IResponse from '@interfaces/response/IResponse';
 import { Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel';
 
 export default function MainPosition() {
@@ -63,17 +65,6 @@ export default function MainPosition() {
             <PanelHeader>
                 <Typography variant="h5">Position List</Typography>
                 <SearchBox className="headline-action">
-                    {/* <Paper
-                    component="form"
-                    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 300 }}
-                    >
-                        <SearchIcon/>
-                        <InputBase
-                            sx={{ ml: 1, flex: 1 }}
-                            placeholder={`Search Position List`}
-                            inputProps={{ 'aria-label': 'search google maps' }}
-                        />
-                    </Paper> */}
                     <NavLink to="/master/position/create">
                         <Button 
                         variant="contained" 
@@ -106,13 +97,22 @@ export default function MainPosition() {
                             <TableCell align="left">{position.name}</TableCell>
                             <TableCell align="center">{position.division.name}</TableCell>
                             <TableCell align="center">
-                                <NavLink to={`/master/position/${position.id}/edit`} replace={false} >
+                                <Box sx={{display: "inline-flex"}}>
+                                    <Box sx={{marginRight: "5px"}}>
+                                        <NavLink to={`/master/position/${position.id}/edit`} replace={false} >
+                                            <Button 
+                                            variant='contained' 
+                                            color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
+                                                <EditIcon sx={{width: '20px !important'}} />
+                                            </Button>
+                                        </NavLink>
+                                    </Box>
                                     <Button 
                                     variant='contained' 
-                                    color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
-                                        <EditIcon sx={{width: '20px !important'}} />
+                                    color='error' sx={{minWidth: "40px !important", width: "40px", marginRight: "5px" }} >
+                                        <DeleteIcon sx={{width: '20px !important'}} />
                                     </Button>
-                                </NavLink>
+                                </Box>
                             </TableCell>
                         </TableRow>
                         ))}

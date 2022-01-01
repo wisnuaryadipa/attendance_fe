@@ -19,6 +19,7 @@ import IEmployee from '@interfaces/response/IEmployee';
 import IResponse from '@interfaces/response/IResponse';
 import { Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ArticleIcon from '@mui/icons-material/Article';
 import { useNavigate } from 'react-router-dom';
 import {Panel, PanelBody, PanelFooter, PanelHeader} from '@components/panel';
@@ -153,7 +154,7 @@ export default function MainEmployee() {
                                             <TableCell align="center">{employee.position ? employee.position.name : ""}</TableCell>
                                             <TableCell align="center">{employee.machineId}</TableCell>
                                             <TableCell align="center">
-                                                <Box>
+                                                <Box sx={{display: "inline-flex"}}>
                                                     <ActionBox to={`/master/employee/${employee.id}/edit`} replace={false} target="_blank" >
                                                         <Button 
                                                         variant='contained' 
@@ -172,6 +173,11 @@ export default function MainEmployee() {
                                                             <ArticleIcon sx={{width: '20px !important'}} />
                                                         </Button>
                                                     </ActionBox>
+                                                    <Button 
+                                                    variant='contained' 
+                                                    color='error' sx={{minWidth: "40px !important", width: "40px"  }} >
+                                                        <DeleteIcon sx={{width: '20px !important'}} />
+                                                    </Button>
                                                 </Box>
                                                 
                                             </TableCell>
