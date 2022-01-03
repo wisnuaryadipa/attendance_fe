@@ -1,30 +1,11 @@
 import react, { HtmlHTMLAttributes, useCallback, useEffect, useState } from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Box from '@mui/material/Box';
-import { Paper } from '@mui/material';
 import IEmployee from 'src/interfaces/response/IEmployee';
-import WorkIcon from '@mui/icons-material/Work';
-import ContactsIcon from '@mui/icons-material/Contacts';
-import EmailIcon from '@mui/icons-material/Email';
-import UnknownPerson from '@src/static/img/UnknownPerson.png';
 import { Calendar, momentLocalizer, EventPropGetter, stringOrDate } from 'react-big-calendar'
 import moment from 'moment'
 import styled from 'styled-components';
-import { border } from '@mui/system';
-import { useParams } from 'react-router';
-import { postAxios } from '@src/services/axios';
-import { AxiosRequestConfig } from 'axios';
-import IResponse from '@src/interfaces/response/IResponse';
-import { IAttendance } from '@src/interfaces/response/IAttendance';
-
+import Box from '@mui/material/Box';
+import {addZero} from '@src/helper/common';
 interface Props extends HtmlHTMLAttributes<HTMLDivElement>, yearMonth {
     data?: IEmployee;
     attendanceData?: any[];
@@ -50,10 +31,11 @@ const BasicInformation = (props: Props) => {
 
     const [propsData, setPropsData] = useState(props.attendanceData);
     const [dateCalendar, setDateCalendar] = useState([] as any)
+
     const [monthYear, setMonthYear] = useState({month: props.month, year: props.year} as yearMonth);
 
     const genCalendarEvent = useCallback(() => {
-        const _arrCalendar:any = [];
+        const _arrCalendar: Event[] = [];
         props.attendanceData!.map( (item:any) => {
             let objEvent: any = {}
             if(item.checkIn || item.checkOut) {
@@ -62,7 +44,7 @@ const BasicInformation = (props: Props) => {
                     objEvent.start = moment(item.checkIn).toDate();
                     objEvent.end = moment(item.checkIn).add(1, 'minutes').toDate();
                     objEvent.hexColor = "40e0d0";
-                    objEvent.title = "Check In";
+                    objEvent.title = "Check In"
                     _arrCalendar.push(objEvent)
                 }
                 if(item.checkOut) {
@@ -86,7 +68,6 @@ const BasicInformation = (props: Props) => {
             setMonthYear({month: props.month, year: props.year})
             genCalendarEvent();
         }
-        console.log('run')
     },[genCalendarEvent, props, propsData])
 
 
@@ -105,6 +86,32 @@ const BasicInformation = (props: Props) => {
         } as React.HTMLAttributes<HTMLDivElement>;
     }
 
+    const customSlotPropGetter = (date: Date) => {
+        let result: any = {}
+        for (const key in props.attendanceData!) {
+            const attendance = props.attendanceData![key];
+            const _date = parseInt(moment(attendance.checkIn).format('D'))
+            if(date.getDate() === _date ){
+                result = {title: attendance.workDuration}
+            }
+        }
+        return result;
+      }
+    const customDateHeader = (propsHeader: any) => {
+        const propsDate = parseInt(moment(propsHeader.date).format("D"));
+        let result = 0;
+        for (const key in props.attendanceData!) {
+            const attendance = props.attendanceData![key];
+            const _date = parseInt(moment(attendance.checkIn).format('D'))
+            if(propsDate === _date) {result = attendance.workDuration}
+        }
+        return (
+            <Box sx={{display: 'flex', justifyContent: "space-between"}}>
+                <div>{addZero(Math.round(result/60), 2)}:{addZero(result%60, 2)}</div>
+                <div>{propsHeader.label}</div>
+            </Box>
+        )
+    }
     return (
         <>
             <Calendar
@@ -116,7 +123,11 @@ const BasicInformation = (props: Props) => {
                 style={{height: 1000, width: "100%", marginTop: "50px" }}
                 views={{month: true}}
                 toolbar={false}
+                dayPropGetter={customSlotPropGetter}
                 eventPropGetter={eventStyle}
+                components={{month: {
+                    dateHeader: customDateHeader
+                }}}
                 />
         </>
                 

@@ -102,18 +102,23 @@ export default function BasicTable() {
                 <TableCell align="left">{division.name}</TableCell>
                 <TableCell align="right">
                   <Box sx={{display: "inline-flex"}}>
-                    <NavLink to={`/master/division/${division.id}/edit`} replace={false} >
-                        <Button 
-                        variant='contained' 
-                        color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
-                            <EditIcon sx={{width: '20px !important'}} />
-                        </Button>
-                    </NavLink>
-                    <Button 
-                    variant='contained' 
-                    color='error' sx={{minWidth: "40px !important", width: "40px"  }} >
-                        <DeleteIcon sx={{width: '20px !important'}} />
-                    </Button>
+                    <Box sx={{marginRight: "5px"}}>
+                      <NavLink to={`/master/division/${division.id}/edit`} replace={false} >
+                          <Button 
+                          variant='contained' 
+                          color='info' sx={{minWidth: "40px !important", width: "40px"  }} >
+                              <EditIcon sx={{width: '20px !important'}} />
+                          </Button>
+                      </NavLink>
+                    </Box>
+                    <Box>
+                      <Button 
+                      variant='contained' 
+                      color='error' sx={{minWidth: "40px !important", width: "40px"  }} >
+                          <DeleteIcon sx={{width: '20px !important'}} />
+                      </Button>
+                    </Box>
+                    
                   </Box>
                 </TableCell>
                 </TableRow>

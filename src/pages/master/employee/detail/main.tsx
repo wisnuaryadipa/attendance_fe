@@ -125,7 +125,6 @@ const MainDetail = () => {
     const checkEmployeeDetail = useCallback( async () => {
         if (!location.state) {
             const fetchRes = await fetchDetailEmployee();
-            console.log("data", fetchRes.data.data)
             return fetchRes.data.data;
         }
         return location.state.data;
@@ -134,7 +133,6 @@ const MainDetail = () => {
     useEffect(() => {
         const asyncRun = async () => {
             await fetchDataAttends();
-            console.log(await checkEmployeeDetail())
             setEmployeeDetail(await checkEmployeeDetail())
             
         }
