@@ -42,6 +42,7 @@ const Payroll = () => {
     const [searchParams, setSearchParam] = useSearchParams();
 
     const updateInputData = (val:any) => {
+        console.log(val)
         refInputData.current = val;
     }
 
@@ -53,7 +54,6 @@ const Payroll = () => {
             method: "GET",
         }
         const resResult = await getAxios<IResponse<IEmployee>>(axiosOption)
-        console.log(resResult)
         resResult.data.data.payrolls.length > 0 ? result = true : result = false;
         return result;
     }
@@ -100,7 +100,9 @@ const Payroll = () => {
             const key = propKey as keyof IBasePayroll;
             const ketString = key.toString();
             if(refInputData.current[key] !== null && ketString !== 'employee' && ketString !== 'division'){
-                dataSend.append(propKey, refInputData.current[key]!.toString());
+                if (ketString !== 'month' && ketString !== 'year' && ketString !== 'employeeId' ) {
+                    dataSend.append(propKey, refInputData.current[key]!.toString());
+                }
             }
         }
         
@@ -201,7 +203,6 @@ const Payroll = () => {
                     <Typography variant='h5'>{monthIDN[monthYear.month-1].toUpperCase()} / {monthYear.year}</Typography>
                     { (() => {
                             if (employeeBeforeAfter) {
-                                console.log(employeeBeforeAfter)
                                 if (employeeBeforeAfter.after && employeeBeforeAfter.after.length > 0) {
 
                                     return (

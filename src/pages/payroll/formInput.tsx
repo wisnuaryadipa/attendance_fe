@@ -53,7 +53,10 @@ const FormInput = (props: any) => {
     const [searchParams, setSearchParam] = useSearchParams();
     const {employeeId} = useParams();
     const refData = useRef({} as any);
-    const refMonthYear = useRef({} as MonthYear)
+    const refMonthYear = useRef({
+        month: parseInt(monthNow), 
+        year: parseInt(yearNow)
+    } as MonthYear)
     const [loading, setLoading] = useState(true);
 
     
@@ -101,6 +104,8 @@ const FormInput = (props: any) => {
                 if (!_employeeData.data.data){ setIsPositionIdExist(false) }
                 if(_employeeData.data.data.payrolls[0]) {
                     setData(_employeeData.data.data.payrolls[0]);
+                    refData.current = _employeeData.data.data.payrolls[0]
+                    props.inputData(_employeeData.data.data.payrolls[0]);
                 } else {
                     const _payrollData = await fetchPayrollData(
                         refMonthYear.current.month,
@@ -108,6 +113,8 @@ const FormInput = (props: any) => {
                         parseInt(employeeId!)
                     )
                     setData(_payrollData.data.data);
+                    refData.current = _payrollData.data.data
+                    props.inputData(_payrollData.data.data);
                 }
             }
             setLoading(false)
@@ -134,6 +141,7 @@ const FormInput = (props: any) => {
                 if (!_employeeData.data.data){ setIsPositionIdExist(false) }
                 if(_employeeData.data.data.payrolls[0]) {
                     setData(_employeeData.data.data.payrolls[0]);
+                    props.inputData(_employeeData.data.data.payrolls[0]);
                 } else {
                     const _payrollData = await fetchPayrollData(
                         refMonthYear.current.month,
@@ -141,13 +149,14 @@ const FormInput = (props: any) => {
                         parseInt(employeeId!)
                     )
                     setData(_payrollData.data.data);
+                    props.inputData(_payrollData.data.data);
                 }
             }
             setLoading(false)
         }
 
         loadSync();
-    },[employeeId])
+    },[employeeId, props])
 
     const handleChangeSelect = async (event: SelectChangeEvent<unknown>, name: string) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
@@ -158,6 +167,7 @@ const FormInput = (props: any) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: String) => {
         setData({...data, [name as keyof typeof data]: event.target.value})
         refData.current = {...data, [name as keyof typeof data]: event.target.value};
+        console.log(refData.current)
         props.inputData(refData.current)
     };
 
