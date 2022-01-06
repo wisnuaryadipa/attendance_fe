@@ -40,8 +40,11 @@ const ResultComponent = (props: any) => {
 
     const saveData = async (option: AxiosRequestConfig) => {
         return await postAxios(option)
-        .then(() => {setData({} as Partial<IDivision>)})
-        .catch();
+        .then((res) => {
+            setData({} as Partial<IDivision>); 
+            return res
+        })
+        .catch((err) => {});
     }
     
     const doSubmitForm = async ()  => {
