@@ -1,5 +1,16 @@
 // craco.config.js
 const path = require("path");
+console.log(process.env.REACT_APP_HOST_TYPE)
+
+if(process.env.REACT_APP_HOST_TYPE === "development"){
+  require('dotenv').config({ path: '.env.development' })
+} else if (process.env.REACT_APP_HOST_TYPE.trim() === "production") {
+  require('dotenv').config({ path: '.env.production' })
+} else {
+  require('dotenv').config({ path: '.env' })
+}
+
+
 module.exports = {
   webpack: {
     alias: {

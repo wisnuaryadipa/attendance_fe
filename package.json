@@ -13,6 +13,8 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "axios": "^0.24.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
     "moment": "^2.29.1",
     "normalize-url": "^7.0.2",
     "notistack": "^2.0.3",
@@ -30,7 +32,10 @@
   },
   "scripts": {
     "start": "craco -r tsconfig-paths/register start",
-    "build": "craco build",
+    "build:dev": "cross-env REACT_APP_HOST_TYPE=development craco build",
+    "build:prod": "cross-env REACT_APP_HOST_TYPE=production  craco build",
+    "start:dev": "cross-env REACT_APP_HOST_TYPE=development craco -r tsconfig-paths/register start",
+    "start:prod": "cross-env REACT_APP_HOST_TYPE=production craco -r tsconfig-paths/register start",
     "test": "craco test",
     "eject": "craco eject"
   },
