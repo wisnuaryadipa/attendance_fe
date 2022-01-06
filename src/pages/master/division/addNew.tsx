@@ -18,7 +18,6 @@ const ResultComponent = (props: any) => {
 
     useEffect( () => {
         const loadAsync = async () => {
-
             setLoading(false)
         }
         loadAsync();
@@ -36,14 +35,13 @@ const ResultComponent = (props: any) => {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         }
-        console.log(data)
-        await saveData(axiosOption);
+        return await saveData(axiosOption);
     }
 
     const saveData = async (option: AxiosRequestConfig) => {
-        const response = await postAxios(option);
-        setData({});
-        return response;
+        return await postAxios(option)
+        .then(() => {setData({} as Partial<IDivision>)})
+        .catch();
     }
     
     const doSubmitForm = async ()  => {
@@ -57,7 +55,7 @@ const ResultComponent = (props: any) => {
             }
         }
         await addDivision(dataSend);
-        setLoading(true);
+        setLoading(false);
     }
 
     return (
@@ -87,8 +85,8 @@ const ResultComponent = (props: any) => {
                             label="Division Name"
                             onChange={(e)=>{handleChange(e, "name")} }
                             className="text-input"
-                            defaultValue={data.name}
-                            value={data.name}
+                            defaultValue=""
+                            value={(data && data.name) ? data.name : "" }
                             />
                         </FormControl>
                     </Grid>

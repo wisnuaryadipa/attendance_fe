@@ -5,11 +5,12 @@ export const postAxios = async (option: AxiosRequestConfig): Promise<AxiosRespon
         const result = await axios.post(option.url!, option.data, option);
         return result
     } catch (err) {
-        alert(err);
         if (axios.isAxiosError(err)){
+            alert(err.response?.data.message);
             const result = err.response!
-            return result;
+            throw result;
         } else {
+            alert(err);
             throw err;
         }
     }
@@ -23,11 +24,12 @@ export const getAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResp
         return data;
         
     } catch (err) {
-        alert(err);
         if (axios.isAxiosError(err)){
+            alert(err.response);
             const result = err.response!
             return result;
         } else {
+            alert(err);
             throw err;
         }
     }
@@ -39,11 +41,12 @@ export const putAxios = async <T>(option: AxiosRequestConfig): Promise<AxiosResp
         alert("Input Data Success !");
         return result;
     } catch (err) {
-        alert(err);
         if (axios.isAxiosError(err)){
+            alert(err.response);
             const result = err.response!
             return result;
         } else {
+            alert(err);
             throw err;
         }
     }
