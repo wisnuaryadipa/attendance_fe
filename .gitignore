@@ -3,5 +3,6 @@
 .env.local
 .env.test
 .env.development
+.env.production
 /logs/**
 /build/**
