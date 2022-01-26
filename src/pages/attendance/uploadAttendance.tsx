@@ -46,6 +46,7 @@ const Render = (): JSX.Element => {
             const option = {
                 url: `${process.env.REACT_APP_URL_API}/api/status`,
                 data: formData,
+                timeout: 0,
                 onUploadProgress: progressEvent => activeLoading(progressEvent),
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -55,6 +56,7 @@ const Render = (): JSX.Element => {
             await postAxios(option).then(res => {
                 setIsLoadingUpload(false);
                 enqueueSnackbar(`File has been uploaded! - ${res.data.data.length} rows`, { variant: 'success' });
+                console.log('finish')
             }).then(res => {
             })
         }
