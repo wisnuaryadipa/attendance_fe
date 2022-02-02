@@ -176,25 +176,12 @@ const ResultComponent = (props: any) => {
                             className="text-input"
                             defaultValue={data.positionId}
                             value={data.positionId}
+                            argsLabel = {[`!name`, '-', `!division.name`]}
                             dataList={positions}
                             /> 
                     </Grid>
                     {/* <Grid lg={6} sm={0}/> */}
                     <Grid item lg={6} sm={6}>   
-                        <TextField 
-                            fullWidth
-                            required
-                            id="contactNumber"
-                            key="contactNumber"
-                            label="Contact Number"
-                            onChange={(e)=>{handleChange(e, "contactNumber")} }
-                            className="text-input"
-                            defaultValue={data.contactNumber}
-                            value={data.contactNumber}
-                            />
-                    </Grid>
-                    <Grid item lg={6} sm={6}>   
-                        
                         <TextField 
                             fullWidth
                             required
@@ -205,6 +192,32 @@ const ResultComponent = (props: any) => {
                             className="text-input"
                             defaultValue={data.email}
                             value={data.email}
+                            />
+                    </Grid>
+                    <Grid item lg={3} sm={3}>   
+                        <TextField 
+                            fullWidth
+                            required
+                            id="rekeningNumber"
+                            key="rekeningNumber"
+                            label="Rekening Number"
+                            onChange={(e)=>{handleChange(e, "rekeningNumber")} }
+                            className="text-input"
+                            defaultValue={data.rekeningNumber}
+                            value={data.rekeningNumber}
+                            />
+                    </Grid>
+                    <Grid item lg={3} sm={3}>   
+                        <TextField 
+                            fullWidth
+                            required
+                            id="contactNumber"
+                            key="contactNumber"
+                            label="Contact Number"
+                            onChange={(e)=>{handleChange(e, "contactNumber")} }
+                            className="text-input"
+                            defaultValue={data.contactNumber}
+                            value={data.contactNumber}
                             />
                     </Grid>
                     <Grid item lg={6} sm={12}>   
@@ -252,7 +265,7 @@ const ResultComponent = (props: any) => {
                             dataList={activeStatus}
                             /> 
                     </Grid>
-                    <Grid item lg={6} sm={12}>   
+                    {/* <Grid item lg={6} sm={12}>   
                         <div style={{display: "flex", alignItems: "center"}}>
                             <Checkbox  
                             checked={data.activeFlatSalary}
@@ -272,8 +285,52 @@ const ResultComponent = (props: any) => {
                                 /> 
                         </div>
                         
+                    </Grid> */}
+                    
+                    <Grid item lg={6} sm={12}>
+                        <TextField 
+                            fullWidth
+                            required
+                            id="dailySalary"
+                            key="dailySalary"
+                            label="Daily Salary"
+                            onChange={(e)=>{handleChange(e, "dailySalary")} }
+                            className="text-input"
+                            defaultValue={data.dailySalary}
+                            value={data.dailySalary}
+                            />
+
+                    </Grid>
+                    <Grid item lg={6} sm={12}>
+                        <TextField 
+                            fullWidth
+                            required
+                            id="holidaySalary"
+                            key="holidaySalary"
+                            label="Holiday Salary"
+                            onChange={(e)=>{handleChange(e, "holidaySalary")} }
+                            className="text-input"
+                            defaultValue={data.holidaySalary}
+                            value={data.holidaySalary}
+                            />
+
+                    </Grid>
+                    <Grid item lg={6} sm={12}>
+
+                        <TextField 
+                            fullWidth
+                            required
+                            id="overtimeSalary"
+                            key="overtimeSalary"
+                            label="Overtime Salary"
+                            onChange={(e)=>{handleChange(e, "overtimeSalary")} }
+                            className="text-input"
+                            defaultValue={data.overtimeSalary}
+                            value={data.overtimeSalary}
+                            />
                     </Grid>
                 </Grid>
+
             </PanelBody>
             <PanelFooter>
                 <div className="text-information">Please fill out the form above. </div>

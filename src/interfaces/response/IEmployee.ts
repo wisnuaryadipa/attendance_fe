@@ -20,7 +20,11 @@ export interface IBaseEmployee {
     description?:string;
     flatSalary?: number;
     activeFlatSalary?: boolean;
-    payrolls: IPayroll[]
+    dailySalary?: number;
+    overtimeSalary?: number;
+    holidaySalary?: number;
+    payrolls: IPayroll[];
+    rekeningNumber?: number;
 }
 
 export default interface IEmployee extends IBaseEmployee {

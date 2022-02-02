@@ -9,7 +9,9 @@ import styled from 'styled-components';
 
 import masterRoutes from './masterRoutes';
 import attendanceRoutes from './attendanceRoutes';
+import exportRoutes from './exportRoutes';
 import payrollRoutes from './payrollRoutes';
+import importRoutes from './importRoutes';
 
 import PrintPayroll from '@pages/payroll/printPayroll';
 import PrintPayrollAll from '@pages/payroll/printPayrollMany';
@@ -36,6 +38,14 @@ const Router = () => {
                     { payrollRoutes.map((route) => {
                         const RouteComponent = route.pageComponent as React.ComponentType;
                         return (<Route caseSensitive={true} path={'payroll' + route.path} element={<RouteComponent/>}></Route>)
+                    }) }
+                    { exportRoutes.map((route) => {
+                        const RouteComponent = route.pageComponent as React.ComponentType;
+                        return (<Route caseSensitive={true} path={'export' + route.path} element={<RouteComponent/>}></Route>)
+                    }) }
+                    { importRoutes.map((route) => {
+                        const RouteComponent = route.pageComponent as React.ComponentType;
+                        return (<Route caseSensitive={true} path={'import' + route.path} element={<RouteComponent/>}></Route>)
                     }) }
                     
                 </Route>
