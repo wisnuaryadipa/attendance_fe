@@ -70,7 +70,7 @@
         "title": "Import",
         "child": [
             {
-                "itemName": "Reformat Time",
+                "itemName": "Employees Salary Master",
                 "iconName": "Import",
                 "url": "/import/master-salary-employee"
             }

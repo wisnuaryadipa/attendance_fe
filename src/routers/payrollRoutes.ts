@@ -12,6 +12,10 @@ const masterRoutes: IRoutes = [
         path: "/:employeeId/form",
         pageComponent: Payroll.input
     },
+    {
+        path: "/weekly/import",
+        pageComponent: Payroll.weeklyImport
+    },
 ]
 
 export default masterRoutes;

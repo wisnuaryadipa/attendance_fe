@@ -132,6 +132,7 @@ export default function MainEmployee() {
                         <TableCell>No.</TableCell>
                         <TableCell align="left">Name</TableCell>
                         <TableCell align="center">Position</TableCell>
+                        <TableCell align="center">Division</TableCell>
                         <TableCell align="center">MachineId</TableCell>
                         <TableCell align="center">Action</TableCell>
                         </TableRow>
@@ -152,6 +153,7 @@ export default function MainEmployee() {
                                             </TableCell>
                                             <TableCell align="left">{employee.name}</TableCell>
                                             <TableCell align="center">{employee.position ? employee.position.name : ""}</TableCell>
+                                            <TableCell align="center">{employee.position?.division ? employee.position.division.name : ""}</TableCell>
                                             <TableCell align="center">{employee.machineId}</TableCell>
                                             <TableCell align="center">
                                                 <Box sx={{display: "inline-flex"}}>
