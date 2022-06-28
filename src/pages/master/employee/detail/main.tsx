@@ -4,6 +4,8 @@ import AttendanceCalendar from './AttendanceCalendar';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,7 +20,9 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { useLocation } from 'react-router';
 
+
 import PerformanceInformation from './performanceInformation';
+import ExportXlsxController, {IOptions} from '@src/controllers/attendance/ExportByEmployeXlsx'
 import IEmployee from '@src/interfaces/response/IEmployee';
 
 interface monthYear {
@@ -86,6 +90,19 @@ const MainDetail = () => {
         // setLoading(true)
     }
 
+    const onClickExportExcel = async () => {
+        console.log(monthYear)
+        console.log(process.env.REACT_APP_URL_API)
+        let option: IOptions = {
+            employeeId: employeeId!,
+            dateStart: moment().month(parseInt(monthYear.month)-1).year(parseInt(monthYear.year)).startOf('month').format('DD-MM-YYYY'),
+            dateEnd: moment().month(parseInt(monthYear.month)-1).year(parseInt(monthYear.year)).endOf('month').format('DD-MM-YYYY')
+        }
+
+        await ExportXlsxController(option);
+
+    }   
+
     const countTotalWorkingHour = useCallback(() => {
         let _totalWorkingHour = 0;
         attendData.forEach((item) => {
@@ -129,6 +146,7 @@ const MainDetail = () => {
         }
         return location.state.data;
     },[fetchDetailEmployee, location])
+
 
     useEffect(() => {
         const asyncRun = async () => {
@@ -175,6 +193,15 @@ const MainDetail = () => {
                         <Box sx={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                             <Typography variant='h4'>{moment().month(parseInt(monthYear.month)-1).format("MMMM")} - {monthYear.year}</Typography>
                             <Box sx={{minWidth: "200px", display: "flex", flexDirection: "row"}}>
+
+                                <FormControl fullWidth sx={{minWidth: "200px", marginRight: "10px"}} >
+                                    <Button 
+                                        onClick={onClickExportExcel}
+                                        variant='contained' 
+                                        color='info' sx={{minWidth: "40px !important", height:"100%"  }} >
+                                        Export Excel
+                                    </Button>
+                                </FormControl>
                                 <FormControl fullWidth sx={{minWidth: "200px", marginRight: "10px"}} >
                                     <InputLabel id="demo-simple-select-label">Month</InputLabel>
                                     <Select

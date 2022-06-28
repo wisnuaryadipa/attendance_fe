@@ -44,7 +44,7 @@ const Render = (): JSX.Element => {
             formData.append('file', file, file.name);
     
             const option = {
-                url: `${process.env.REACT_APP_URL_API}/api/status`,
+                url: `${process.env.REACT_APP_URL_API}/api/attendance/import/file`,
                 data: formData,
                 timeout: 0,
                 onUploadProgress: progressEvent => activeLoading(progressEvent),

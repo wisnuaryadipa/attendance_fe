@@ -5,6 +5,7 @@
             "*": ["./src/subfolder/node_modules/@types/*", "*"],
             "@src/*": ["./src/*"],
             "@components/*": ["./src/components/*"],
+            "@controllers/*": ["./src/controllers/*"],
             "@containers/*": ["./src/containers/*"],
             "@routers/*": ["./src/routers/*"],
             "@interfaces/*": ["./src/interfaces/*"],
