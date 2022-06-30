@@ -19,11 +19,13 @@ import IResponse from '@src/interfaces/response/IResponse';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useLocation } from 'react-router';
+import xlsx from 'xlsx';
 
 
 import PerformanceInformation from './performanceInformation';
 import ExportXlsxController, {IOptions} from '@src/controllers/attendance/ExportByEmployeXlsx'
 import IEmployee from '@src/interfaces/response/IEmployee';
+import FileSaver from 'file-saver';
 
 interface monthYear {
     month: string;
@@ -99,7 +101,15 @@ const MainDetail = () => {
             dateEnd: moment().month(parseInt(monthYear.month)-1).year(parseInt(monthYear.year)).endOf('month').format('DD-MM-YYYY')
         }
 
-        await ExportXlsxController(option);
+        let _resData = await ExportXlsxController(option);
+
+        const attendanceWS = xlsx.utils.json_to_sheet(_resData);
+                var wb = xlsx.utils.book_new();
+        
+                xlsx.utils.book_append_sheet(wb, attendanceWS, 'kehadiran');
+                const excelBuffer = xlsx.write(wb, {bookType:'xlsx', type:'array'});
+                const finalData = new Blob([excelBuffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                FileSaver.saveAs(finalData, `formated_${"employee"}_${moment().format("DD/MM/YYYY hh:mm:ss")}.xlsx`);
 
     }   
 
