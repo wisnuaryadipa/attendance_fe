@@ -98,7 +98,7 @@ const MainDetail = () => {
         let option: IOptions = {
             employeeId: employeeId!,
             dateStart: moment().month(parseInt(monthYear.month)-1).year(parseInt(monthYear.year)).startOf('month').format('DD-MM-YYYY'),
-            dateEnd: moment().month(parseInt(monthYear.month)-1).year(parseInt(monthYear.year)).endOf('month').format('DD-MM-YYYY')
+            dateEnd: moment().month(parseInt(monthYear.month)-1).year(parseInt(monthYear.year)).endOf('month').add(1, 'd').format('DD-MM-YYYY')
         }
 
         let _resData = await ExportXlsxController(option);

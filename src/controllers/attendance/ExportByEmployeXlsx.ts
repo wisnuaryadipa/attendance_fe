@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import _, { filter } from 'lodash';
 import { IAttendance } from "src/interfaces/IAttendance";
 
@@ -45,14 +45,14 @@ const exportByEmployeeXlsx = async (options: IOptions) => {
 
 const reformatResponseJson = (attendances: IAttendance[], employeeId: string, start: string, end: string) => {
     const reformedAttendances: IReformAttendance[]= [];
-
     const _startDate = moment(start,'DD-MM-YYYY');
     const _totalDate = moment.duration(moment(end,'DD-MM-YYYY').diff(moment(start,'DD-MM-YYYY'))).asDays();
-    for (let i = 0; i <= _totalDate; i++) {
+    for (let i = 0; i <= _totalDate-1; i++) {
         const _defineDate = moment(start,'DD-MM-YYYY').add(i,'d');
         console.log(_defineDate.format('DD/MM/YYYY'))
+
         const filtered = _.filter(attendances, (att) => {
-            return moment(att.recordTime).date() === _defineDate.date();
+            return moment(att.recordTime).isSame(_defineDate, 'date');
         });
         const reformatedAttendance: IReformAttendance = {
             nomor: i + 1,
@@ -63,27 +63,46 @@ const reformatResponseJson = (attendances: IAttendance[], employeeId: string, st
         if (filtered.length > 0) {
             
             const checkIn = (_.filter(filtered, (x) => {return x.status === "CHECKIN"}));
-            const checkOut = (_.filter(filtered, (x) => {return x.status === "CHECKOUT"}));
-            const _timeCheckIn = checkIn.length > 0 ? checkIn[0].recordTime : undefined;
-            const _timeCheckOut = checkOut.length > 0 ? checkOut[0].recordTime : undefined;
+            const checkOut = (_.filter(filtered, (x) => {return x.status === "CHECKOUT" && moment(x.recordTime).isAfter(moment(x.recordTime).set({hour: 12}))}));
 
-            reformatedAttendance.checkIn = _timeCheckIn ? moment(_timeCheckIn).format('DD-MM-YYYY HH:mm') : undefined;
-            reformatedAttendance.checkOut = _timeCheckOut ? moment(_timeCheckOut).format('DD-MM-YYYY HH:mm') : undefined;
-            reformatedAttendance.workDutation = (_timeCheckIn && _timeCheckOut) 
-                ? ( moment(_timeCheckOut).diff(moment(_timeCheckIn), 'hours') + " Jam, " 
-                    + moment.duration(moment(_timeCheckOut).diff(moment(_timeCheckIn))).asMinutes() % 60 + " Menit")
+            const _timeCheckIn = checkIn.length > 0 && checkIn[0].recordTime;
+            const _timeCheckOut = checkOut.length > 0 && checkOut[0].recordTime;
+
+            let timeCheckIn = _timeCheckIn ? moment(_timeCheckIn) : undefined;
+            let timeCheckOut = _timeCheckOut ? moment(_timeCheckOut) : undefined;
+            console.log('m ', timeCheckIn, ' : ', timeCheckOut)
+            if ( !timeCheckOut ) {
+                const _nextCheckOut = getNextCheckOut(attendances, _defineDate);
+                if (_nextCheckOut) { timeCheckOut = _nextCheckOut?.recordTime }
+            }
+            reformatedAttendance.checkIn = timeCheckIn ? moment(timeCheckIn).format('DD-MM-YYYY HH:mm') : undefined;
+            reformatedAttendance.checkOut = timeCheckOut ? moment(timeCheckOut).format('DD-MM-YYYY HH:mm') : undefined;
+            reformatedAttendance.workDutation = (timeCheckIn && timeCheckOut) 
+                ? ( moment(timeCheckOut).diff(moment(timeCheckIn), 'hours') + " Jam, " 
+                    + moment.duration(moment(timeCheckOut).diff(moment(timeCheckIn))).asMinutes() % 60 + " Menit")
                 : "";
-            reformatedAttendance.description = declareDescription(_timeCheckIn, _timeCheckOut);
+            reformatedAttendance.description = declareDescription(timeCheckIn, timeCheckOut);
         }
 
         reformedAttendances.push(reformatedAttendance);
     }
-    console.log(reformedAttendances)
     return reformedAttendances;
 
 }
 
-const declareDescription = (checkIn:string | undefined, checkOut:string|undefined) => {
+const getNextCheckOut = (attendances: any[], currentCheckIn: Moment) => {
+    let result = undefined;
+        result = _.filter(attendances, (att) => {
+            const _isFilterDate = moment(att.recordTime).isSame(moment(currentCheckIn).add(1, 'd'), 'dates');
+            const _isFilterStatus = att.status === "CHECKOUT";
+            const _isFilterTime = moment(att.recordTime).hours() <= 3
+            return _isFilterDate && _isFilterStatus && _isFilterTime;
+        })
+    
+    return result?.[0];
+}
+
+const declareDescription = (checkIn: Moment|undefined, checkOut: Moment|undefined) => {
     if (checkIn || checkOut) {
         if (!checkIn) {
             return "Pegawai tidak melakukan CHECK IN";
@@ -93,7 +112,7 @@ const declareDescription = (checkIn:string | undefined, checkOut:string|undefine
             return ""
         }
     } else {
-        return "Pegawai tidak melakukan CHECK IN dan CHECK OUT";
+        return "Pegawai tidak Masuk Kantor";
     }
 } 
 
